@@ -36,6 +36,10 @@
     <color name="seekBarProgressBackgroundColor">#F8F8F8</color>
     <color name="seekBarThumbColor">#424242</color>
 
+    <style name="CustomProgressBar" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressBackgroundTint">#111</item>
+        <item name="android:progressTint">#D2D2D2</item>
+    </style>
 
     <!-- NO LONGER USED -->
     <color name="TrafficLightYellow">#cee100</color>

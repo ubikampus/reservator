@@ -1,77 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="0dp"
-        android:padding="4dp"
-        android:background="#0098d0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="0dp"
+    android:padding="4dp"
+    android:background="#0098d0"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <FrameLayout
+        android:id="@+id/roomStatusContainer"
+        android:layout_width="900dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <fragment
+            android:id="@+id/roomStatusFragment"
+            android:name="com.futurice.android.reservator.view.trafficlights.RoomStatusFragment"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/roomReservationContainer"
+        android:layout_width="900dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/roomStatusContainer">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/dayCalendarContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomFragmentContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/roomStatusContainer"
         app:layout_constraintTop_toTopOf="parent">
 
-        <FrameLayout
-            android:id="@+id/roomStatusContainer"
-            android:layout_width="900dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <fragment
-                android:id="@+id/roomStatusFragment"
-                android:name="com.futurice.android.reservator.view.trafficlights.RoomStatusFragment"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/roomReservationContainer"
-            android:layout_width="900dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/roomStatusContainer">
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/dayCalendarContainer"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottomFragmentContainer"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/roomStatusContainer"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <fragment
-                android:id="@+id/dayCalendarFragment"
-                android:name="com.futurice.android.reservator.view.trafficlights.DayCalendarFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/bottomFragmentContainer"
+        <fragment
+            android:id="@+id/dayCalendarFragment"
+            android:name="com.futurice.android.reservator.view.trafficlights.DayCalendarFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
-            <fragment
-                android:id="@+id/bottomFragment"
-                android:name="com.futurice.android.reservator.view.trafficlights.BottomFragment"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                />
-        </FrameLayout>
-    </android.support.constraint.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/bottomFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <fragment
+            android:id="@+id/bottomFragment"
+            android:name="com.futurice.android.reservator.view.trafficlights.BottomFragment"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            />
+    </FrameLayout>
+</android.support.constraint.ConstraintLayout>
 
