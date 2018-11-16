@@ -93,11 +93,12 @@
     <Button
         android:id="@+id/cancelChangeButton"
         android:layout_width="600dp"
-        android:layout_height="85dp"
+        android:layout_height="80dp"
         android:text="@string/cancelChange"
-        android:textColor="#F8F8F8"
+        android:background="#F8F8F8"
+        android:textColor="@color/TrafficLightReserved"
         android:visibility="gone"
-        android:textSize="14sp"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cangeProgressBar"></Button>
