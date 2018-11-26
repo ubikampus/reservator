@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="#62def8"
+        android:background="#111"
         android:text="This is a popup window."
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
