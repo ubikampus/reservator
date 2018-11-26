@@ -16,8 +16,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 
 import com.futurice.android.reservator.common.LedHelper;
 import com.futurice.android.reservator.model.Model;
@@ -40,7 +49,10 @@ public class MainActivity extends FragmentActivity {
 
     private Model model;
 
-
+    private Button popupButton;
+    private PopupWindow popupWindow;
+    private LayoutInflater layoutInflater;
+    private RelativeLayout relativeLayout;
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -208,6 +220,31 @@ public class MainActivity extends FragmentActivity {
 
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
+
+        popupButton = (Button) findViewById(R.id.infoButton);
+        relativeLayout = (RelativeLayout) findViewById(R.id.roomStatusFragment);
+
+        if(popupButton != null){
+            popupButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view){
+                    layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.popup_menu, null);
+
+                    popupWindow = new PopupWindow(container, 400, 400, true);
+                    popupWindow.showAtLocation(relativeLayout, Gravity.NO_GRAVITY, 500,500); //put relative layout
+
+                    //Closes window
+                    container.setOnTouchListener(new View.OnTouchListener(){
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent){
+                            popupWindow.dismiss();
+                            return true;
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Override
@@ -236,5 +273,31 @@ public class MainActivity extends FragmentActivity {
         unregisterReceiver(broadcastReceiver);
     }
 
+    public void onButtonShowPopupWindowClick(View view) {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater)
+                getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_menu, null);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+    }
 
 }

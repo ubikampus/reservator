@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/roomStatusFragment"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,19 +19,17 @@
 
     <TextView
         android:id="@+id/roomTitleText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="1145dp"
+        android:layout_height="55dp"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
         android:textAlignment="viewStart"
         android:textAllCaps="true"
         android:textColor="@color/TrafficLightText"
         android:textIsSelectable="false"
         android:textSize="40sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,6 +108,25 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/meetingNameText" />
+
+    <Button
+        android:id="@+id/infoButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="960dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/CalendarBorderColor"
+        android:text="i"
+        app:layout_constraintBottom_toTopOf="@+id/statusText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.991"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.186" />
+
+
 </android.support.constraint.ConstraintLayout>
 
 
