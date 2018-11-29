@@ -59,5 +59,6 @@
     <string name="approveChange">Vahvista muutos\nKonfirmera förändringen\nConfirm change</string>
     <string name="cancelChange">Muutokset tallennetaan | Ändringarna sparas | Saving changes\n\nPeruuta | Avbryt | Cancel</string>
     <string name="modifyPrompt">Muokkaa varausta liukusäätimestä • Ändra reserveringen med skjutreglaget • Modify with slider</string>
-
+    <string name="device_admin">Device admin</string>
+    <string name="device_admin_description">Device admin for turning on the kiosk mode</string>
 </resources>

@@ -2,7 +2,9 @@ package com.futurice.android.reservator;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.futurice.android.reservator.common.LedHelper;
 import com.futurice.android.reservator.model.Model;
@@ -47,6 +50,40 @@ public class MainActivity extends FragmentActivity {
     private Model model;
 
 
+    public void turnKioskOn() {
+        // get policy manager
+        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        // get this app package name
+        ComponentName mDPM = new ComponentName(this, MyAdmin.class);
+
+        if (myDevicePolicyManager.isDeviceOwnerApp(this.getPackageName())) {
+            // get this app package name
+            String[] packages = {this.getPackageName()};
+            // mDPM is the admin package, and allow the specified packages to lock task
+            myDevicePolicyManager.setLockTaskPackages(mDPM, packages);
+            startLockTask();
+        } else {
+            Toast.makeText(getApplicationContext(),"Not owner", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void turnKioskOff() {
+        // get policy manager
+        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        // get this app package name
+        ComponentName mDPM = new ComponentName(this, MyAdmin.class);
+
+        if (myDevicePolicyManager.isDeviceOwnerApp(this.getPackageName())) {
+            // get this app package name
+            String[] packages = {this.getPackageName()};
+            // mDPM is the admin package, and allow the specified packages to lock task
+            myDevicePolicyManager.setLockTaskPackages(mDPM, packages);
+            stopLockTask();
+        } else {
+            Toast.makeText(getApplicationContext(),"Not owner", Toast.LENGTH_LONG).show();
+        }
+    }
+
     BroadcastReceiver calendarChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -58,6 +95,7 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("Reservator","KIOSK_ON intent received");
+            turnKioskOn();
         }
     };
 
@@ -65,6 +103,7 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("Reservator","KIOSK_OFF intent received");
+            turnKioskOff();
         }
     };
 
@@ -229,6 +268,7 @@ public class MainActivity extends FragmentActivity {
         this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
         this.registerReceiver(kioskOnReceiver, new IntentFilter(this.KIOSK_ON_INTENT_NAME));
         this.registerReceiver(kioskOffReceiver, new IntentFilter(this.KIOSK_OFF_INTENT_NAME));
+        //Log.d("Futurice","componentName="+DeviceAdmin.getComponentName(this));
     }
 
     @Override
