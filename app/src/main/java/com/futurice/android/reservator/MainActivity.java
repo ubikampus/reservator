@@ -222,7 +222,7 @@ public class MainActivity extends FragmentActivity {
         this.updateNetworkStatus();
 
         popupButton = (Button) findViewById(R.id.infoButton);
-        relativeLayout = (RelativeLayout) findViewById(R.id.trafficLightsPageFragment);
+        relativeLayout = (RelativeLayout) findViewById(R.id.bottomFragment);
 
         if(popupButton != null){
             popupButton.setOnClickListener(new View.OnClickListener(){
