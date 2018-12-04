@@ -34,6 +34,7 @@ public class OngoingReservationFragment extends Fragment {
 
     private ProgressBar changeProgressBar;
     private Button cancelChangeButton;
+    private Button cancelReservationButton;
     private TextView modifyPrompt;
 
     private CountDownTimer changeTimer;
@@ -115,12 +116,14 @@ public class OngoingReservationFragment extends Fragment {
     public void showChancelWidgets() {
         this.changeProgressBar.setVisibility(View.VISIBLE);
         this.cancelChangeButton.setVisibility(View.VISIBLE);
+        this.cancelReservationButton.setVisibility(View.VISIBLE);
         this.modifyPrompt.setVisibility(View.GONE);
     }
 
     public void hideCancelWidgets() {
         this.changeProgressBar.setVisibility(View.GONE);
         this.cancelChangeButton.setVisibility(View.GONE);
+        this.cancelReservationButton.setVisibility(View.GONE);
         this.modifyPrompt.setVisibility(View.VISIBLE);
     }
 
@@ -186,6 +189,8 @@ public class OngoingReservationFragment extends Fragment {
 
         this.cancelChangeButton = (Button)  view.findViewById(R.id.cancelChangeButton);
         this.cancelChangeButton.setOnClickListener(this.onCancelClicked);
+
+        this.cancelReservationButton = (Button)  view.findViewById(R.id.cancelButton);
 
         this.seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
