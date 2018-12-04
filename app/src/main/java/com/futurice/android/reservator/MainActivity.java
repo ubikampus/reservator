@@ -39,8 +39,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 
 public class MainActivity extends FragmentActivity {
-    public String KIOSK_ON_INTENT_NAME = "com.futurice.android.reservator.KIOSK_ON";
-    public String KIOSK_OFF_INTENT_NAME = "com.futurice.android.reservator.KIOSK_OFF";
 
     private FragmentManager fragmentManager;
 
@@ -51,12 +49,14 @@ public class MainActivity extends FragmentActivity {
 
 
     public void turnKioskOn() {
+        Log.d("MainActivity", "Turn kiosk on.");
         // get policy manager
         DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         // get this app package name
         ComponentName mDPM = new ComponentName(this, MyAdmin.class);
 
         if (myDevicePolicyManager.isDeviceOwnerApp(this.getPackageName())) {
+            Log.d("MainActivity", "App is the device owner");
             // get this app package name
             String[] packages = {this.getPackageName()};
             // mDPM is the admin package, and allow the specified packages to lock task
@@ -266,8 +266,8 @@ public class MainActivity extends FragmentActivity {
         this.updateNetworkStatus();
 
         this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
-        this.registerReceiver(kioskOnReceiver, new IntentFilter(this.KIOSK_ON_INTENT_NAME));
-        this.registerReceiver(kioskOffReceiver, new IntentFilter(this.KIOSK_OFF_INTENT_NAME));
+        this.registerReceiver(kioskOnReceiver, new IntentFilter(KioskStateReceiver.KIOSK_ON));
+        this.registerReceiver(kioskOffReceiver, new IntentFilter(KioskStateReceiver.KIOSK_OFF));
         //Log.d("Futurice","componentName="+DeviceAdmin.getComponentName(this));
     }
 
@@ -294,6 +294,8 @@ public class MainActivity extends FragmentActivity {
         LedHelper.getInstance().setGreenBrightness(0);
         LedHelper.getInstance().setRedBrightness(0);
         unregisterReceiver(calendarChangeReceiver);
+        unregisterReceiver(kioskOnReceiver);
+        unregisterReceiver(kioskOffReceiver);
     }
 
     private void hideSoftKeyboard() {

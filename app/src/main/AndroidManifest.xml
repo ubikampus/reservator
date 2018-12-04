@@ -78,9 +78,16 @@
                 <data android:host="com.android.calendar"/>
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".KioskStateReceiver">
+            <intent-filter>
+                <action android:name="com.futurice.android.reservator.KIOSK_ON"/>
+                <action android:name="com.futurice.android.reservator.KIOSK_OFF"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name="com.futurice.android.reservator.MyAdmin"
-            android:label="test"
-            android:description="test"
+            android:label="@string/device_admin"
+            android:description="@string/device_admin_description"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data android:name="android.app.device_admin" android:resource="@xml/my_admin" />
             <intent-filter>
