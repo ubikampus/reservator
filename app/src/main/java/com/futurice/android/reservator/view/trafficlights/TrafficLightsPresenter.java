@@ -35,8 +35,8 @@ public class TrafficLightsPresenter implements
         com.futurice.android.reservator.model.AddressBookUpdatedListener {
 
     final int QUICK_BOOK_THRESHOLD = 5; // minutes
-    final int MAX_QUICK_BOOK_MINUTES = 120; //minutes
-    final int DEFAULT_MINUTES = 45;
+    //final int MAX_QUICK_BOOK_MINUTES = 120; //minutes
+   // final int DEFAULT_MINUTES = 45;
 
     private boolean connected = true;
     private boolean reservationChangeInProgess= false;
@@ -157,8 +157,10 @@ public class TrafficLightsPresenter implements
     @Override
     public void setRoomReservationFragment(RoomReservationFragment fragment) {
         this.roomReservationFragment = fragment;
-        this.roomReservationFragment.setMaxMinutes(MAX_QUICK_BOOK_MINUTES);
-        this.roomReservationFragment.setMinutes(DEFAULT_MINUTES);
+        this.roomReservationFragment.setMaxMinutes(PreferenceManager.getInstance(fragment
+            .getContext()).getMaxDurationMinutes());
+        this.roomReservationFragment.setMinutes(PreferenceManager.getInstance(fragment.getContext
+            ()).getDefaultDurationMinutes());
         this.tryStarting();
     }
 
@@ -358,7 +360,7 @@ public class TrafficLightsPresenter implements
 
         long endTime = currentReservation.getEndTime().getTimeInMillis();
         int remainingMinutes = (int) Math.round((endTime - System.currentTimeMillis()) / 60000f);
-        int tempMax = MAX_QUICK_BOOK_MINUTES;
+        int tempMax = PreferenceManager.getInstance(activity).getMaxDurationMinutes();
 
         // Maximum time until the next reservation
         if (room.isFreeAt(currentReservation.getEndTime())) {
@@ -373,8 +375,8 @@ public class TrafficLightsPresenter implements
             tempMax = remainingMinutes;
         }
 
-        if (tempMax > MAX_QUICK_BOOK_MINUTES)
-            tempMax = MAX_QUICK_BOOK_MINUTES;
+        if (tempMax > PreferenceManager.getInstance(activity).getMaxDurationMinutes())
+            tempMax = PreferenceManager.getInstance(activity).getMaxDurationMinutes();
 
         if (remainingMinutes > tempMax)
             tempMax = remainingMinutes;
@@ -422,8 +424,8 @@ public class TrafficLightsPresenter implements
 
         this.roomReservationFragment.clearDescription();
 
-        this.roomReservationFragment.setMaxMinutes(MAX_QUICK_BOOK_MINUTES);
-        this.roomReservationFragment.setMinutes(DEFAULT_MINUTES);
+        this.roomReservationFragment.setMaxMinutes(PreferenceManager.getInstance(activity).getMaxDurationMinutes());
+        this.roomReservationFragment.setMinutes(PreferenceManager.getInstance(activity).getDefaultDurationMinutes());
 
         this.showRedLed();
     }
@@ -455,7 +457,7 @@ public class TrafficLightsPresenter implements
         this.roomStatusFragment.setStatusUntilText(resources.getString(R.string.free_for_the_day));
 
 
-        this.roomReservationFragment.setMaxMinutes(MAX_QUICK_BOOK_MINUTES);
+        this.roomReservationFragment.setMaxMinutes(PreferenceManager.getInstance(activity).getMaxDurationMinutes());
 
         int minutes = this.roomReservationFragment.getCurrentMinutes();
         this.dayCalendarFragment.setTentativeTimeSpan(new TimeSpan(new DateTime(), new DateTime(System.currentTimeMillis() + (minutes * 60 * 1000))));
@@ -485,9 +487,9 @@ public class TrafficLightsPresenter implements
         this.trafficLightsPageFragment.showRoomReservationFragment();
         this.roomStatusFragment.showBookNowText();
 
-        int tempMinutes = MAX_QUICK_BOOK_MINUTES;
+        int tempMinutes = PreferenceManager.getInstance(activity).getMaxDurationMinutes();
 
-        if (freeMinutes < MAX_QUICK_BOOK_MINUTES)
+        if (freeMinutes < PreferenceManager.getInstance(activity).getMaxDurationMinutes())
             tempMinutes = freeMinutes;
         this.roomReservationFragment.setMaxMinutes(tempMinutes);
 

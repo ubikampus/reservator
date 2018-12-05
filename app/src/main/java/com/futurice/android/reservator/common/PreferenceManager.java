@@ -32,6 +32,8 @@ public class PreferenceManager {
     final static String PREFERENCES_SELECTED_ROOM = "roomName";
     final static String PREFERENCES_CONFIGURED = "preferencedConfigured";
     final static String PREFERENCES_CALENDAR_MODE = "resourcesOnly";
+    final static String PREFERENCES_DEFAULT_DURATION_MINUTES = "defaultDurationMinutes";
+    final static String PREFERENCES_MAX_DURATION_MINUTES = "maxDurationMinutes";
 
 
     final SharedPreferences preferences;
@@ -96,6 +98,25 @@ public class PreferenceManager {
         editor.apply();
     }
 
+    public int getDefaultDurationMinutes() {
+        return preferences.getInt(PREFERENCES_DEFAULT_DURATION_MINUTES, 45);
+    }
+
+    public void setDefaultDurationMinutes(int value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(PREFERENCES_DEFAULT_DURATION_MINUTES, value);
+        editor.apply();
+    }
+
+    public int getMaxDurationMinutes() {
+        return preferences.getInt(PREFERENCES_MAX_DURATION_MINUTES, 120);
+    }
+
+    public void setMaxDurationMinutes(int value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(PREFERENCES_MAX_DURATION_MINUTES, value);
+        editor.apply();
+    }
 
     public boolean getApplicationConfigured() {
         return preferences.getBoolean(PREFERENCES_CONFIGURED, false);
