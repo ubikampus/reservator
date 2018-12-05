@@ -82,7 +82,7 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
         this.textColor = textColor;
         this.weekTextColor = weekTextColor;
         this.gridColor = gridColor;
-        this.reservationTextColor = reservationTextColor;
+        this.reservationTextColor = getResources().getColor(reservationTextColor);
         this.textFont = textFont;
         this.reservationTextFont = reservationTextFont;
 
