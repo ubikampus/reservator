@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.futurice.android.reservator.ReservatorApplication;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.DataProxy;
 
+import com.github.paolorotolo.appintro.ISlidePolicy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +29,8 @@ import butterknife.Unbinder;
  * Created by shoj on 10/11/2016.
  */
 
-public final class WizardDefaultRoomSelectionFragment extends android.support.v4.app.Fragment {
+public final class WizardDefaultRoomSelectionFragment extends android.support.v4.app.Fragment implements
+    ISlidePolicy {
 
     @BindView(R.id.wizard_accounts_radiogroup)
     RadioGroup roomRadioGroup;
@@ -85,6 +88,16 @@ public final class WizardDefaultRoomSelectionFragment extends android.support.v4
             roomRadioGroup.addView(roomRadioButton);
         }
 
+
+    }
+
+    @Override
+    public boolean isPolicyRespected() {
+        return roomRadioGroup.getCheckedRadioButtonId() != -1;
+    }
+
+    @Override
+    public void onUserIllegallyRequestedNextPage() {
 
     }
 }

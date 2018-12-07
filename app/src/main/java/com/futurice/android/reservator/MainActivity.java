@@ -254,6 +254,8 @@ public class MainActivity extends FragmentActivity {
         LedHelper.getInstance().setGreenBrightness(0);
         LedHelper.getInstance().setRedBrightness(0);
         unregisterReceiver(calendarChangeReceiver);
+        unregisterReceiver(kioskOnReceiver);
+        unregisterReceiver(kioskOffReceiver);
     }
 
     private void hideSoftKeyboard() {
