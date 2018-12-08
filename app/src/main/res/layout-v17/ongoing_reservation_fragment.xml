@@ -93,9 +93,9 @@
         app:layout_constraintTop_toBottomOf="@+id/modifyPrompt" />
 
     <Button
-        android:id="@+id/cancelButton"
-        android:layout_width="391dp"
-        android:layout_height="72dp"
+        android:id="@+id/cancelReservationButton"
+        android:layout_width="280dp"
+        android:layout_height="92dp"
         android:layout_alignTop="@+id/nameInput"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
@@ -105,7 +105,7 @@
         android:background="@drawable/reserve_button"
         android:text="@string/cancel_reservation"
         android:textColor="@color/TrafficLightReserved"
-        android:textSize="25dp"
+        android:textSize="20dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

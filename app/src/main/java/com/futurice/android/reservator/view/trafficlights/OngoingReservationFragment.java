@@ -1,4 +1,5 @@
 package com.futurice.android.reservator.view.trafficlights;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -6,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -94,6 +96,12 @@ public class OngoingReservationFragment extends Fragment {
             cancelChanges();
         }
     };
+    private View.OnClickListener onCancelReservationClicked = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            animateCancelReservation();
+        }
+    };
 
     private void cancelChanges() {
         seekBar.setProgress(savedProgress);
@@ -103,7 +111,21 @@ public class OngoingReservationFragment extends Fragment {
         presenter.onReservationMinutesUpdated(savedProgress);
         presenter.onReservationChangeEnded();
         seekBar.setEnabled(true);
-    };
+    }
+
+    private void animateCancelReservation() {
+        ObjectAnimator animation = ObjectAnimator.ofInt(seekBar, "progress", 0);
+        animation.setDuration(400);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.start();
+        presenter.onReservationChangeStarted();
+        savedProgress = seekBar.getProgress();
+
+        seekBar.setProgress(0);
+        seekBar.setEnabled(false);
+        progress = 0;
+        startChangeCountDown();
+    }
 
     private void saveChanges() {
         this.hideCancelWidgets();
@@ -111,7 +133,7 @@ public class OngoingReservationFragment extends Fragment {
         this.presenter.onReservationMinutesChanged(progress);
         this.presenter.onReservationChangeEnded();
         seekBar.setEnabled(true);
-    };
+    }
 
     public void showChancelWidgets() {
         this.changeProgressBar.setVisibility(View.VISIBLE);
@@ -187,10 +209,11 @@ public class OngoingReservationFragment extends Fragment {
 
         this.changeProgressBar = (ProgressBar) view.findViewById(R.id.cangeProgressBar);
 
-        this.cancelChangeButton = (Button)  view.findViewById(R.id.cancelChangeButton);
+        this.cancelChangeButton = (Button) view.findViewById(R.id.cancelChangeButton);
         this.cancelChangeButton.setOnClickListener(this.onCancelClicked);
 
-        this.cancelReservationButton = (Button)  view.findViewById(R.id.cancelButton);
+        this.cancelReservationButton = (Button) view.findViewById(R.id.cancelReservationButton);
+        this.cancelReservationButton.setOnClickListener(this.onCancelReservationClicked);
 
         this.seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
