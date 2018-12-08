@@ -106,15 +106,13 @@ public class TrafficLightsPageFragment extends Fragment {
             throw new ClassCastException(presenter.toString() + " must implement DayCalendarPresenter");
         }
 
-
-
-        /*try {
+        try {
             this.bottomFragment = (BottomFragment)getChildFragmentManager().findFragmentById(R.id.bottomFragment);
             this.bottomFragment.setPresenter((BottomFragment.BottomFragmentPresenter) this.presenter);
         }
         catch (ClassCastException e) {
             throw new ClassCastException(presenter.toString() + " must implement BottomFragmentPresenter");
-        }*/
+        }
 
         return view;
     }
@@ -217,6 +215,20 @@ public class TrafficLightsPageFragment extends Fragment {
         }
     }
 
+    public void showInfoWindow() {
+        if (fragmentManager != null) {
+            //fragmentManager.executePendingTransactions();
+            //FragmentTransaction ft = fragmentManager.beginTransaction();
+
+            InfoWindow infoWindow = new InfoWindow();
+
+            infoWindow.show(fragmentManager, "info_window");
+
+
+            //ft.commitAllowingStateLoss();
+            //fragmentManager.executePendingTransactions();
+        }
+    }
     /*
     public void hideDisconnectedFragment() {
         this.removeCurrentChildFragment();

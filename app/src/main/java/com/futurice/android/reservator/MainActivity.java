@@ -221,6 +221,7 @@ public class MainActivity extends FragmentActivity {
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
 
+        /*
         popupButton = (Button) findViewById(R.id.infoButton);
         relativeLayout = (RelativeLayout) findViewById(R.id.bottomFragment);
 
@@ -229,7 +230,7 @@ public class MainActivity extends FragmentActivity {
                 @Override
                 public void onClick(View view){
                     layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                    ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.popup_menu, null);
+                    ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.info_window, null);
 
                     popupWindow = new PopupWindow(container, 400, 400, true);
                     popupWindow.showAtLocation(relativeLayout, Gravity.NO_GRAVITY, 500,500); //put relative layout
@@ -244,7 +245,7 @@ public class MainActivity extends FragmentActivity {
                     });
                 }
             });
-        }
+        }*/
     }
 
     @Override
@@ -255,14 +256,11 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    // Start of implemtation of the calendar change listener with intent filters
-    // TODO: make this actually work
 
     public void onCalendarUpdated() {
         if (this.model != null)
             this.model.getDataProxy().refreshRoomReservations(this.model.getFavoriteRoom());
     }
-
 
 
     @Override
@@ -272,13 +270,13 @@ public class MainActivity extends FragmentActivity {
         LedHelper.getInstance().setRedBrightness(0);
         unregisterReceiver(broadcastReceiver);
     }
-
+/*
     public void onButtonShowPopupWindowClick(View view) {
 
         // inflate the layout of the popup window
         LayoutInflater inflater = (LayoutInflater)
                 getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_menu, null);
+        View popupView = inflater.inflate(R.layout.info_window, null);
 
         // create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -299,5 +297,5 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
-
+*/
 }

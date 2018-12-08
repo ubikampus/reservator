@@ -29,6 +29,7 @@ public class TrafficLightsPresenter implements
         DayCalendarFragment.DayCalendarPresenter,
         OngoingReservationFragment.OngoingReservationPresenter,
         DisconnectedFragment.DisconnectedFragmentPresenter,
+        BottomFragment.BottomFragmentPresenter,
         com.futurice.android.reservator.common.Presenter,
         com.futurice.android.reservator.model.DataUpdatedListener,
         com.futurice.android.reservator.model.AddressBookUpdatedListener {
@@ -46,6 +47,8 @@ public class TrafficLightsPresenter implements
     private OngoingReservationFragment ongoingReservationFragment;
     private DayCalendarFragment dayCalendarFragment;
     private DisconnectedFragment disconnectedFragment;
+    private BottomFragment bottomFragment;
+
     private Activity activity;
     private Model model;
     private Resources resources;
@@ -111,7 +114,7 @@ public class TrafficLightsPresenter implements
     private void tryStarting() {
         if (trafficLightsPageFragment != null && roomStatusFragment != null &&
                 ongoingReservationFragment != null && roomReservationFragment != null && dayCalendarFragment != null &&
-                disconnectedFragment!=null) {
+                disconnectedFragment != null && this.bottomFragment != null){
             this.model.getDataProxy().refreshRoomReservations(this.model.getFavoriteRoom());
             handler.postDelayed(minuteRunnable, 60000);
         }
@@ -145,6 +148,9 @@ public class TrafficLightsPresenter implements
         }
     }
 
+    private void showInfoWindow() {
+        this.trafficLightsPageFragment.showInfoWindow();
+    }
 
     // ------ Implementation of RoomReservationFragment.RoomReservationPresenter
 
@@ -245,6 +251,20 @@ public class TrafficLightsPresenter implements
     public void setDisconnectedFragment(DisconnectedFragment fragment) {
         this.disconnectedFragment = fragment;
         this.tryStarting();
+    }
+
+
+    // ------- Implementation of BottonFragment.BottomFragmentPresenter
+
+    @Override
+    public void setBottomFragment(BottomFragment fragment) {
+        this.bottomFragment = fragment;
+        this.tryStarting();
+    }
+
+    @Override
+    public void onInfoButtonClicked() {
+        this.showInfoWindow();
     }
 
     // ------- Implementation of model.DataUpdatedListener
