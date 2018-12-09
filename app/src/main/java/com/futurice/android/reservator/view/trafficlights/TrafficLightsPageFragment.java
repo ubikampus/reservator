@@ -1,6 +1,7 @@
 package com.futurice.android.reservator.view.trafficlights;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -221,7 +222,7 @@ public class TrafficLightsPageFragment extends Fragment {
             //FragmentTransaction ft = fragmentManager.beginTransaction();
 
             InfoWindow infoWindow = new InfoWindow();
-
+            infoWindow.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
             infoWindow.show(fragmentManager, "info_window");
 
 
