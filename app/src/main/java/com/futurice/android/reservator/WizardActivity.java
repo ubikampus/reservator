@@ -11,6 +11,7 @@ import com.futurice.android.reservator.view.wizard
         .WizardAccountSelectionFragment;
 import com.futurice.android.reservator.view.wizard
         .WizardDefaultRoomSelectionFragment;
+import com.futurice.android.reservator.view.wizard.WizardDurationSelectionFragment;
 import com.futurice.android.reservator.view.wizard.WizardRoomSelectionFragment;
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -29,11 +30,14 @@ public final class WizardActivity extends AppIntro {
         final Fragment roomSelection = new WizardRoomSelectionFragment();
         final Fragment roomDefaultSelection =
                 new WizardDefaultRoomSelectionFragment();
+        final Fragment durationSelection =
+            new WizardDurationSelectionFragment();
 
 
         super.addSlide(calendarAccountSelection);
         super.addSlide(roomSelection);
         super.addSlide(roomDefaultSelection);
+        super.addSlide(durationSelection);
 
         showSkipButton(false);
         setProgressButtonEnabled(true);

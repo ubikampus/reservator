@@ -22,6 +22,8 @@ public class RoomReservationFragment extends Fragment {
         void setRoomReservationFragment(RoomReservationFragment fragment);
         void onReservationRequestMade(int minutes, String description);
         void onMinutesUpdated(int minutes);
+        void onTentativeChangeStarted();
+        void onTentativeChangeEnded();
     }
 
     private RoomReservationPresenter presenter;
@@ -92,6 +94,11 @@ public class RoomReservationFragment extends Fragment {
             this.nameInput.setText("");
     }
 
+    public int getCurrentMinutes() {
+        if (seekBar != null)
+            return seekBar.getProgress();
+        return 0;
+    }
 
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         int minutesIncrement = 5;
@@ -117,11 +124,13 @@ public class RoomReservationFragment extends Fragment {
 
         @Override
         public void onStartTrackingTouch(android.widget.SeekBar seekBar) {
+            //savedProgress = ((int) Math.round(seekBar.getProgress() / minutesIncrement)) * minutesIncrement;
+            presenter.onTentativeChangeStarted();
         }
 
         @Override
         public void onStopTrackingTouch(android.widget.SeekBar seekBar) {
-
+            presenter.onTentativeChangeEnded();
         }
     };
 

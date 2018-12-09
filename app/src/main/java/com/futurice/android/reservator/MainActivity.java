@@ -1,6 +1,7 @@
 package com.futurice.android.reservator;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,17 +17,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
+import android.view.inputmethod.InputMethodManager;
 
 import com.futurice.android.reservator.common.LedHelper;
 import com.futurice.android.reservator.model.Model;
@@ -42,6 +36,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 
 public class MainActivity extends FragmentActivity {
+    public String KIOSK_ON_INTENT_NAME = "com.futurice.android.reservator.KIOSK_ON";
+    public String KIOSK_OFF_INTENT_NAME = "com.futurice.android.reservator.KIOSK_OFF";
+
     private FragmentManager fragmentManager;
 
     private TrafficLightsPageFragment trafficLightsPageFragment;
@@ -49,15 +46,25 @@ public class MainActivity extends FragmentActivity {
 
     private Model model;
 
-    private Button popupButton;
-    private PopupWindow popupWindow;
-    private LayoutInflater layoutInflater;
-    private RelativeLayout relativeLayout;
+    BroadcastReceiver calendarChangeReceiver = new BroadcastReceiver() {
 
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             onCalendarUpdated();
+        }
+    };
+
+    BroadcastReceiver kioskOnReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Reservator","KIOSK_ON intent received");
+        }
+    };
+
+    BroadcastReceiver kioskOffReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Reservator","KIOSK_OFF intent received");
         }
     };
 
@@ -203,8 +210,6 @@ public class MainActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        registerReceiver(broadcastReceiver,
-            new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
 
         this.fragmentManager = getSupportFragmentManager();
         this.trafficLightsPageFragment = new TrafficLightsPageFragment();
@@ -221,36 +226,16 @@ public class MainActivity extends FragmentActivity {
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
 
-        /*
-        popupButton = (Button) findViewById(R.id.infoButton);
-        relativeLayout = (RelativeLayout) findViewById(R.id.bottomFragment);
 
-        if(popupButton != null){
-            popupButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view){
-                    layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                    ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.info_window, null);
-
-                    popupWindow = new PopupWindow(container, 400, 400, true);
-                    popupWindow.showAtLocation(relativeLayout, Gravity.NO_GRAVITY, 500,500); //put relative layout
-
-                    //Closes window
-                    container.setOnTouchListener(new View.OnTouchListener(){
-                        @Override
-                        public boolean onTouch(View view, MotionEvent motionEvent){
-                            popupWindow.dismiss();
-                            return true;
-                        }
-                    });
-                }
-            });
-        }*/
+        this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
+        this.registerReceiver(kioskOnReceiver, new IntentFilter(this.KIOSK_ON_INTENT_NAME));
+        this.registerReceiver(kioskOffReceiver, new IntentFilter(this.KIOSK_OFF_INTENT_NAME));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         if (getAvailableAccounts().length <= 0) {
             showSetupWizard();
         }
@@ -262,40 +247,31 @@ public class MainActivity extends FragmentActivity {
             this.model.getDataProxy().refreshRoomReservations(this.model.getFavoriteRoom());
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         LedHelper.getInstance().setGreenBrightness(0);
         LedHelper.getInstance().setRedBrightness(0);
-        unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(calendarChangeReceiver);
+        unregisterReceiver(kioskOnReceiver);
+        unregisterReceiver(kioskOffReceiver);
     }
-/*
-    public void onButtonShowPopupWindowClick(View view) {
 
-        // inflate the layout of the popup window
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.info_window, null);
-
-        // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                return true;
-            }
-        });
+    private void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) this.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                getWindow().getDecorView().getRootView().getWindowToken(), 0);
     }
-*/
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        //Log.d("Reservator","touch event");
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
+            this.hideSoftKeyboard();
+        return super.dispatchTouchEvent(event);
+    }
+
 }
