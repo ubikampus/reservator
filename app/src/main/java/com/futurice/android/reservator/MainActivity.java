@@ -46,8 +46,8 @@ public class MainActivity extends FragmentActivity {
 
     private Model model;
 
-
     BroadcastReceiver calendarChangeReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             onCalendarUpdated();
@@ -226,6 +226,7 @@ public class MainActivity extends FragmentActivity {
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
 
+
         this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
         this.registerReceiver(kioskOnReceiver, new IntentFilter(this.KIOSK_ON_INTENT_NAME));
         this.registerReceiver(kioskOffReceiver, new IntentFilter(this.KIOSK_OFF_INTENT_NAME));
@@ -240,8 +241,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    // Start of implemtation of the calendar change listener with intent filters
-    // TODO: make this actually work
 
     public void onCalendarUpdated() {
         if (this.model != null)
@@ -265,6 +264,7 @@ public class MainActivity extends FragmentActivity {
         inputMethodManager.hideSoftInputFromWindow(
                 getWindow().getDecorView().getRootView().getWindowToken(), 0);
     }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

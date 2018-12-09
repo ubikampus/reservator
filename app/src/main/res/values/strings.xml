@@ -62,4 +62,9 @@
     <string name="default_duration">Default duration</string>
     <string name="maximum_duration">Maximum duration</string>
 
+    <string name="app_info_title">UbiKampus Reservator information</string>
+    <string name="general_github_link">https://github.com/ubikampus/reservator</string>
+    <string name="app_desc_text">UbiKampus Reservator is an Android application for displaying and reserving meeting rooms, developed by Futurice and the University of Helsinki.</string>
+    <string name="give_feedback_contribute_text">Give us feedback / contribute to the project: </string>
+    <string name="button_info_ok">OK</string>
 </resources>
