@@ -27,3 +27,32 @@ Installation
 3. Install the Reservator app. Upon first startup of the app, permission must be granted to allow access to contacts and calendar (both are required), then choose the calendar you created in step 2. Since reservator is meant to be run in public spaces, there is no UI for changing this calendar selection after you have initially set it up. If you want to switch the calendar at a later point, please uninstall the Reservator app, and re-install it. 
 
 <img src="images/SelectCalendarAccount.png" width="300">
+
+Kiosk Mode
+----------
+
+1. Make sure there are no accounts on the device. (Test whether this is even necessary with Outlook accounts).
+
+2. Install the reservator
+
+  `adb install -g reservator.apk`
+
+3. Make the reservator the device owner:
+
+  `adb shell dpm set-device-owner com.futurice.android.reservator/.MyAdmin`
+
+4. Add the necessary accounts.
+
+5. Start the reservator.
+
+6. Make the reservator the home app in the settings.
+
+7. Turn the kiosk mode on:
+
+  `adb shell am broadcast -a "com.futurice.android.reservator.KIOSK_ON" -n com.futurice.android.reservator/.KioskStateReceiver`
+
+
+The kiosk mode can be turned off:
+
+  `adb shell am broadcast -a "com.futurice.android.reservator.KIOSK_OFF" -n com.futurice.android.reservator/.KioskStateReceiver`
+  

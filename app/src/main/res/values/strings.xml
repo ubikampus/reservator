@@ -59,9 +59,10 @@
     <string name="approveChange">Vahvista muutos\nKonfirmera förändringen\nConfirm change</string>
     <string name="cancelChange">Muutokset tallennetaan | Ändringarna sparas | Saving changes\n\nPeruuta | Avbryt | Cancel</string>
     <string name="modifyPrompt">Muokkaa varausta liukusäätimestä • Ändra reserveringen med skjutreglaget • Modify with slider</string>
+    <string name="device_admin">Device admin</string>
+    <string name="device_admin_description">Device admin for turning on the kiosk mode</string>
     <string name="default_duration">Default duration</string>
     <string name="maximum_duration">Maximum duration</string>
-
     <string name="app_info_title">UbiKampus Reservator information</string>
     <string name="general_github_link">https://github.com/ubikampus/reservator</string>
     <string name="app_desc_text">UbiKampus Reservator is an Android application for displaying and reserving meeting rooms, developed by Futurice and the University of Helsinki.</string>
