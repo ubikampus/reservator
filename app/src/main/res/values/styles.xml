@@ -56,6 +56,9 @@
 
     <color name="CurrentTimeLineColor">#A6000000</color>
 
+    <color name="InfoWindowBackground">#0098d0</color>
+    <color name="InfoWindowText">#F8F8F8</color>
+
 
     <!-- NO LONGER USED -->
     <color name="TrafficLightYellow">#cee100</color>
