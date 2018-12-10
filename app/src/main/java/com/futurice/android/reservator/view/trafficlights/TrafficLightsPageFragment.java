@@ -1,6 +1,7 @@
 package com.futurice.android.reservator.view.trafficlights;
 
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -106,15 +107,13 @@ public class TrafficLightsPageFragment extends Fragment {
             throw new ClassCastException(presenter.toString() + " must implement DayCalendarPresenter");
         }
 
-
-
-        /*try {
+        try {
             this.bottomFragment = (BottomFragment)getChildFragmentManager().findFragmentById(R.id.bottomFragment);
             this.bottomFragment.setPresenter((BottomFragment.BottomFragmentPresenter) this.presenter);
         }
         catch (ClassCastException e) {
             throw new ClassCastException(presenter.toString() + " must implement BottomFragmentPresenter");
-        }*/
+        }
 
         return view;
     }
@@ -217,6 +216,20 @@ public class TrafficLightsPageFragment extends Fragment {
         }
     }
 
+    public void showInfoWindow() {
+        if (fragmentManager != null) {
+            //fragmentManager.executePendingTransactions();
+            //FragmentTransaction ft = fragmentManager.beginTransaction();
+
+            InfoWindow infoWindow = new InfoWindow();
+            infoWindow.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+            infoWindow.show(fragmentManager, "info_window");
+
+
+            //ft.commitAllowingStateLoss();
+            //fragmentManager.executePendingTransactions();
+        }
+    }
     /*
     public void hideDisconnectedFragment() {
         this.removeCurrentChildFragment();

@@ -47,7 +47,6 @@ public class MainActivity extends FragmentActivity {
 
     private Model model;
 
-
     public void turnKioskOn() {
         Log.d("MainActivity", "Turn kiosk on.");
         // get policy manager
@@ -85,6 +84,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     BroadcastReceiver calendarChangeReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             onCalendarUpdated();
@@ -265,6 +265,7 @@ public class MainActivity extends FragmentActivity {
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
 
+
         this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
         this.registerReceiver(kioskOnReceiver, new IntentFilter(KioskStateReceiver.KIOSK_ON));
         this.registerReceiver(kioskOffReceiver, new IntentFilter(KioskStateReceiver.KIOSK_OFF));
@@ -280,8 +281,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    // Start of implemtation of the calendar change listener with intent filters
-    // TODO: make this actually work
 
     public void onCalendarUpdated() {
         if (this.model != null)
@@ -305,6 +304,7 @@ public class MainActivity extends FragmentActivity {
         inputMethodManager.hideSoftInputFromWindow(
                 getWindow().getDecorView().getRootView().getWindowToken(), 0);
     }
+
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
