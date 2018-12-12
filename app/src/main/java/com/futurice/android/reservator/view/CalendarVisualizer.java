@@ -70,6 +70,7 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
         this.dayStartTime = dayStartTime;
         this.dayEndTime = dayEndTime;
         this.daysToShow = daysToShow;
+        timeLabelWidth = context.getResources().getDimensionPixelSize(R.dimen.timeLabelWidth);
 
         firstDayToShow = new DateTime().stripTime();
         //forces scroll view to have scrollable content area
@@ -82,7 +83,7 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
         this.textColor = textColor;
         this.weekTextColor = weekTextColor;
         this.gridColor = gridColor;
-        this.reservationTextColor = reservationTextColor;
+        this.reservationTextColor = getResources().getColor(reservationTextColor);
         this.textFont = textFont;
         this.reservationTextFont = reservationTextFont;
 
