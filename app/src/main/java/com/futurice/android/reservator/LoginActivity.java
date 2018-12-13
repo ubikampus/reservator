@@ -1,7 +1,9 @@
 package com.futurice.android.reservator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import com.futurice.android.reservator.common.LocaleManager;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.AddressBook;
 import com.futurice.android.reservator.model.AddressBookUpdatedListener;
@@ -13,6 +15,11 @@ public class LoginActivity extends ReservatorActivity
 
   private boolean addressBookOk = false;
   private boolean roomListOk = false;
+
+  @Override
+  protected void attachBaseContext(Context base) {
+    super.attachBaseContext(LocaleManager.onAttach(base));
+  }
 
   /**
    * Called when the activity is first created.

@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.futurice.android.reservator.common.LedHelper;
+import com.futurice.android.reservator.common.LocaleManager;
 import com.futurice.android.reservator.model.Model;
 import com.futurice.android.reservator.view.trafficlights.TrafficLightsPageFragment;
 import com.futurice.android.reservator.view.trafficlights.TrafficLightsPresenter;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import java.util.Locale;
 
 public class MainActivity extends FragmentActivity {
 
@@ -46,6 +48,11 @@ public class MainActivity extends FragmentActivity {
     private TrafficLightsPresenter presenter;
 
     private Model model;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.onAttach(base));
+    }
 
     public void turnKioskOn() {
         Log.d("MainActivity", "Turn kiosk on.");
@@ -248,7 +255,7 @@ public class MainActivity extends FragmentActivity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+         LocaleManager.onAttach(getApplicationContext());
 
         this.fragmentManager = getSupportFragmentManager();
         this.trafficLightsPageFragment = new TrafficLightsPageFragment();
