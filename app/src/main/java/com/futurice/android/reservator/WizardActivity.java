@@ -1,17 +1,20 @@
 
 package com.futurice.android.reservator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.futurice.android.reservator.common.LocaleManager;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.view.wizard
         .WizardAccountSelectionFragment;
 import com.futurice.android.reservator.view.wizard
         .WizardDefaultRoomSelectionFragment;
 import com.futurice.android.reservator.view.wizard.WizardDurationSelectionFragment;
+import com.futurice.android.reservator.view.wizard.WizardLanguageSelectionFragment;
 import com.futurice.android.reservator.view.wizard.WizardRoomSelectionFragment;
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -24,12 +27,15 @@ public final class WizardActivity extends AppIntro {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocaleManager.onAttach(getApplicationContext());
 
         final Fragment calendarAccountSelection =
                 new WizardAccountSelectionFragment();
         final Fragment roomSelection = new WizardRoomSelectionFragment();
         final Fragment roomDefaultSelection =
                 new WizardDefaultRoomSelectionFragment();
+        final Fragment languageSelection =
+            new WizardLanguageSelectionFragment();
         final Fragment durationSelection =
             new WizardDurationSelectionFragment();
 
@@ -37,11 +43,17 @@ public final class WizardActivity extends AppIntro {
         super.addSlide(calendarAccountSelection);
         super.addSlide(roomSelection);
         super.addSlide(roomDefaultSelection);
+        super.addSlide(languageSelection);
         super.addSlide(durationSelection);
 
         showSkipButton(false);
         setProgressButtonEnabled(true);
         setFadeAnimation();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.onAttach(base));
     }
 
     @Override

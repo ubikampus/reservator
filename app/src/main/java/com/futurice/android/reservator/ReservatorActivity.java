@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.futurice.android.reservator.common.LocaleManager;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.ReservatorException;
 import com.futurice.android.reservator.model.Room;
@@ -25,6 +26,11 @@ public class ReservatorActivity extends Activity {
     protected boolean havePermissions = false;
     BatteryStateReceiver batteryStateReceiver = new BatteryStateReceiver();
     IntentFilter filter = new IntentFilter();
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.onAttach(base));
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

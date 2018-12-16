@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.futurice.android.reservator.common.LocaleManager;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.AddressBook;
 import com.futurice.android.reservator.model.AddressBookUpdatedListener;
@@ -87,6 +88,11 @@ public class RoomActivity extends ReservatorActivity implements OnMenuItemClickL
         Intent i = new Intent(context, RoomActivity.class);
         i.putExtra(ROOM_EXTRA, room);
         context.startActivity(i);
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.onAttach(base));
     }
 
     @Override

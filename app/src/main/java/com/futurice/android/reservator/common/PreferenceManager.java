@@ -7,6 +7,7 @@ import com.futurice.android.reservator.model.platformcalendar
         .PlatformCalendarDataProxy;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -34,6 +35,7 @@ public class PreferenceManager {
     final static String PREFERENCES_CALENDAR_MODE = "resourcesOnly";
     final static String PREFERENCES_DEFAULT_DURATION_MINUTES = "defaultDurationMinutes";
     final static String PREFERENCES_MAX_DURATION_MINUTES = "maxDurationMinutes";
+    final static String PREFERENCES_SELECTED_LANGUAGE = "language";
 
 
     final SharedPreferences preferences;
@@ -97,6 +99,17 @@ public class PreferenceManager {
         editor.putString(PREFERENCES_SELECTED_ROOM, newRoom);
         editor.apply();
     }
+
+    public String getSelectedLanguage() {
+        return preferences.getString(PREFERENCES_SELECTED_LANGUAGE, Locale.getDefault().getLanguage());
+    }
+
+    public void setSelectedLanguage(String newLanguage) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_SELECTED_LANGUAGE, newLanguage);
+        editor.apply();
+    }
+
 
     public int getDefaultDurationMinutes() {
         return preferences.getInt(PREFERENCES_DEFAULT_DURATION_MINUTES, 45);

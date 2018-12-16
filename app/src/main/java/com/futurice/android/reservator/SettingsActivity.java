@@ -3,6 +3,7 @@ package com.futurice.android.reservator;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.MediaRouteButton;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.futurice.android.reservator.common.LocaleManager;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.DataProxy;
 import com.futurice.android.reservator.model.platformcalendar.PlatformCalendarDataProxy;
@@ -49,6 +51,11 @@ public class SettingsActivity extends ReservatorActivity {
     Button removeUserDataButton;
     @BindView(R.id.defaultReservationAccountLabel)
     TextView defaultReservationAccountLabel;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleManager.onAttach(base));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
