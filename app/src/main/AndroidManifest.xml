@@ -52,7 +52,13 @@
             android:screenOrientation="sensorLandscape"
             android:name=".WizardActivity"
             android:noHistory="true"
-            android:theme="@style/Theme.AppCompat" />
+            android:theme="@style/Theme.AppCompat">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="reservator"
+                    android:host="change.reservator.settings" />
+            </intent-filter>
+        </activity>
         <activity
             android:screenOrientation="sensorLandscape"
             android:name=".CheckPermissionsActivity"
