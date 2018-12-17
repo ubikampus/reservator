@@ -17,7 +17,6 @@ import com.futurice.android.reservator.view.wizard
         .WizardDefaultRoomSelectionFragment;
 import com.futurice.android.reservator.view.wizard.WizardDurationSelectionFragment;
 import com.futurice.android.reservator.view.wizard.WizardLanguageSelectionFragment;
-import com.futurice.android.reservator.view.wizard.WizardRoomSelectionFragment;
 import com.github.paolorotolo.appintro.AppIntro;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +48,6 @@ public final class WizardActivity extends AppIntro {
         }
         final Fragment calendarAccountSelection =
                 new WizardAccountSelectionFragment();
-        final Fragment roomSelection = new WizardRoomSelectionFragment();
         final Fragment roomDefaultSelection =
                 new WizardDefaultRoomSelectionFragment();
         final Fragment languageSelection =
@@ -59,7 +57,6 @@ public final class WizardActivity extends AppIntro {
 
 
         super.addSlide(calendarAccountSelection);
-        super.addSlide(roomSelection);
         super.addSlide(roomDefaultSelection);
         super.addSlide(languageSelection);
         super.addSlide(durationSelection);
@@ -85,15 +82,8 @@ public final class WizardActivity extends AppIntro {
         super.onSlideChanged(oldFragment, newFragment);
         // Do something when the slide changes.
 
-        // save old
-        if (oldFragment instanceof WizardRoomSelectionFragment) {
-            ((WizardRoomSelectionFragment) oldFragment).saveSelection();
-        }
-
         // load new
-        if (newFragment instanceof WizardRoomSelectionFragment) {
-            ((WizardRoomSelectionFragment) newFragment).loadRooms();
-        } else if (newFragment instanceof WizardDefaultRoomSelectionFragment) {
+        if (newFragment instanceof WizardDefaultRoomSelectionFragment) {
             ((WizardDefaultRoomSelectionFragment) newFragment).reloadRooms();
         }
 
