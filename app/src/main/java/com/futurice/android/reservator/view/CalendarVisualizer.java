@@ -363,6 +363,7 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
         textPaint.setColor(reservationTextColor);
         textPaint.setTypeface(getTypeFaceFromFont(getContext(), reservationTextFont));
         TextPaint textPaintForEllipsize = new TextPaint(textPaint);
+        float previousTextY = 0;
         for (Reservation r : reservations) {
             float highlightEndY = getProportionalEndY(r.getEndTime()) * height;
             float textY = getProportionalY(r.getStartTime()) * height + textHeight + paddingY;
@@ -377,7 +378,13 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
 
             String subject = (String) TextUtils.ellipsize(r.getSubject(), textPaintForEllipsize, tempAvail,
                     TextUtils.TruncateAt.END);
-            c.drawText(subject, getXForTime(r.getStartTime()) + paddingX, getProportionalY(r.getStartTime()) * height + textHeight + paddingY, textPaint);
+            if (previousTextY + textHeight + paddingY < textY) {
+                c.drawText(subject, getXForTime(r.getStartTime()) + paddingX,
+                    getProportionalY(r.getStartTime()) * height + textHeight + paddingY, textPaint);
+            } else {
+                Log.d("CalendarVizualizer", "not enough distance, not drawing");
+            }
+            previousTextY = textY;
         }
         textPaint.setColor(textColor);
         textPaint.setTypeface(getTypeFaceFromFont(getContext(), textFont));
