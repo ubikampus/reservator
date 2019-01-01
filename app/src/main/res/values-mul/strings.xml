@@ -13,8 +13,11 @@
     <string name="lobbyRoomName">Lobby</string>
     <string name="calendarError">Calendar error</string>
     <string name="noCalendarsError">No meeting room calendars found. Please ensure that a Calendar
-        Account has been configured on this device and that the Calendar has been set to sync the
+        Account has been configured on this device and that the Android Calendar App has been set to sync the
         meeting room calendars.</string>
+    <string name="calendarRoomError">Calendar error: no rooms</string>
+    <string name="noCalendarRoomsError">No meeting rooms found. Please ensure that the Android Calendar App
+        has been configured and set to sync the meeting room calendars.</string>
     <string name="close">Close</string>
     <string name="used_google_account">Used calendar account</string>
     <string name="shown_rooms">Visible rooms</string>
