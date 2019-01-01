@@ -28,6 +28,44 @@ Installation
 
 <img src="images/SelectCalendarAccount.png" width="300">
 
+Installation through ADB
+-----------
+
+Use option -g to grant the app all the required permissions, and option -r to install without
+uninstalling the previous version first:
+
+   `adb install -g -r reservator.apk`
+
+You can also configure the app from ADB:
+
+   `adb shell am start -a android.intent.action.VIEW -d "reservator://change.reservator.settings?account=calendar@example.com\&default_room=test-room1\&lang=fi" com.futurice.android.reservator/.RemoteConfigActivity`
+
+The config variables are:
+
+1. account
+2. default_room
+3. lang
+4. max_duration
+5. default_duration
+
+The errors go to the Android log and can be read by adb logcat.
+
+Language config only succeeds if the localization is available.
+
+Duration config fails if it's not a number, or if both durations are given and default is longer than max. If for example only the default duration is given and it is higher than the existing max, it gets raised up to the existing max.
+
+Account config fails is the account is not available.
+
+Room config does not fail even if the room is not available.
+
+If both the account (verified) and room (unverified) are set, the app considers itself configured. You can change the configuration later through adb.
+
+You can also open the config wizard if you want to reconfigure the app manually. Just run the same adb command without any config variables.
+
+   `adb shell am start -a android.intent.action.VIEW -d "reservator://change.reservator.settings" com.futurice.android.reservator/.RemoteConfigActivity`
+
+If you reconfigure the app while it is running, the changes will take effect on restart.
+
 Kiosk Mode
 ----------
 
@@ -55,4 +93,5 @@ Kiosk Mode
 The kiosk mode can be turned off:
 
   `adb shell am broadcast -a "com.futurice.android.reservator.KIOSK_OFF" -n com.futurice.android.reservator/.KioskStateReceiver`
+
   

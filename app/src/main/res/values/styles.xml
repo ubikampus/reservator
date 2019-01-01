@@ -95,5 +95,13 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="Theme.CompatTransparent" parent="Theme.AppCompat">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/Transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- <item name="android:windowIsFloating">true</item> -->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 
 </resources>
