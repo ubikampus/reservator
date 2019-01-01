@@ -63,10 +63,10 @@
     <string name="device_admin_description">Device admin for turning on the kiosk mode</string>
     <string name="default_duration">Default duration</string>
     <string name="maximum_duration">Maximum duration</string>
-    <string name="app_info_title">UbiKampus Reservator information</string>
+    <string name="app_info_title">About Ubikampus Reservator</string>
     <string name="general_github_link">https://github.com/ubikampus/reservator</string>
-    <string name="app_desc_text">UbiKampus Reservator is an Android application for displaying and reserving meeting rooms, developed by Futurice and the University of Helsinki.</string>
-    <string name="give_feedback_contribute_text">Give us feedback / contribute to the project: </string>
+    <string name="app_desc_text">Ubikampus Reservator is an open-source Android application developed by Futurice and the University of Helsinki.</string>
+    <string name="give_feedback_contribute_text">You can give us feedback and contribute to the project at</string>
     <string name="button_info_ok">OK</string>
     <string name="version">Version %1$s</string>
 </resources>
