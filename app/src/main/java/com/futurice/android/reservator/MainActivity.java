@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -19,6 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -258,14 +260,38 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+            //Toast.makeText(this, "Volume button is disabled", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
+            //Toast.makeText(this, "Volume button is disabled", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-         LocaleManager.onAttach(getApplicationContext());
+        LocaleManager.onAttach(getApplicationContext());
 
         this.getWindow().getDecorView().setSystemUiVisibility(this.flags);
+
+        // Mute the audio
+
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        am.setStreamVolume(
+                AudioManager.STREAM_SYSTEM,
+                0,
+                0);
 
         this.fragmentManager = getSupportFragmentManager();
         this.trafficLightsPageFragment = new TrafficLightsPageFragment();
