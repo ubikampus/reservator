@@ -20,6 +20,7 @@ public class RemoteConfigActivity extends AppCompatActivity {
     public static final String LANGUAGE = "lang";
     public static final String DEFAULT_DURATION = "default_duration";
     public static final String MAX_DURATION = "max_duration";
+    public static final String ROOM_DISPLAY_NAME = "room_display_name";
     public static final String LOG_TAG = "RemoteConfigActivity";
 
     private Intent intent;
@@ -53,20 +54,25 @@ public class RemoteConfigActivity extends AppCompatActivity {
         String defaultDurationString = data.getQueryParameter(DEFAULT_DURATION);
         String maxDurationString = data.getQueryParameter(MAX_DURATION);
         String language = data.getQueryParameter(LANGUAGE);
+        String roomDisplayName = data.getQueryParameter(ROOM_DISPLAY_NAME);
+
+        PreferenceManager preferences = PreferenceManager.getInstance(this);
+
         boolean accountSet = false;
         boolean roomSet = false;
         if (account == null
             && defaultRoom == null
             && defaultDurationString == null
             && maxDurationString == null
-            && language == null) {
+            && language == null
+            && roomDisplayName ==null) {
             Log.d(LOG_TAG, "Parameters not found, opening the wizard");
             final Intent i = new Intent(this, WizardActivity.class);
             startActivity(i);
         }
         if (account != null) {
             if (accountExists(account)) {
-                PreferenceManager preferences = PreferenceManager.getInstance(this);
+
                 preferences.setDefaultCalendarAccount(account);
                 accountSet = true;
                 Log.d(LOG_TAG, "Account configured: " + preferences.getDefaultCalendarAccount());
@@ -75,7 +81,6 @@ public class RemoteConfigActivity extends AppCompatActivity {
             }
         }
         if (defaultRoom != null) {
-            PreferenceManager preferences = PreferenceManager.getInstance(this);
             preferences.setSelectedRoom(defaultRoom);
             roomSet = true;
             Log.d(LOG_TAG, "Room configured: " + preferences.getSelectedRoom());
@@ -92,6 +97,10 @@ public class RemoteConfigActivity extends AppCompatActivity {
         }
         if (language != null) {
             setLanguage(language);
+        }
+
+        if (roomDisplayName != null) {
+            setRoomDisplayName(roomDisplayName);
         }
         if (accountSet && roomSet) {
             PreferenceManager.getInstance(this).setApplicationConfigured(true);
@@ -169,6 +178,10 @@ public class RemoteConfigActivity extends AppCompatActivity {
         } else {
             Log.d(LOG_TAG, "Could not set language " + language);
         }
+    }
+
+    private void setRoomDisplayName(String name) {
+        PreferenceManager.getInstance(this).setRoomDisplayName(name);
     }
 
     private boolean accountExists(String account) {

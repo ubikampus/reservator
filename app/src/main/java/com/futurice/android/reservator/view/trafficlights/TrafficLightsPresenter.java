@@ -533,9 +533,12 @@ public class TrafficLightsPresenter implements
         this.room = room;
 
 
-
-        this.roomStatusFragment.setRoomTitleText(room.getName());
-
+        if (PreferenceManager.getInstance(this.activity).getRoomDisplayName() != null) {
+            this.roomStatusFragment.setRoomTitleText(PreferenceManager.getInstance(this.activity).getRoomDisplayName());
+        }
+        else {
+            this.roomStatusFragment.setRoomTitleText(room.getName());
+        }
         if (room.isBookable(QUICK_BOOK_THRESHOLD)) {
             if (room.isFreeRestOfDay()) {
                 this.showFreeForRestOfTheDay();

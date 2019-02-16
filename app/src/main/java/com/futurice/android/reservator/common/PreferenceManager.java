@@ -36,7 +36,7 @@ public class PreferenceManager {
     final static String PREFERENCES_DEFAULT_DURATION_MINUTES = "defaultDurationMinutes";
     final static String PREFERENCES_MAX_DURATION_MINUTES = "maxDurationMinutes";
     final static String PREFERENCES_SELECTED_LANGUAGE = "language";
-
+    final static String PREFERENCES_ROOM_DISPLAY_NAME = "roomDisplayName";
 
     final SharedPreferences preferences;
 
@@ -110,6 +110,15 @@ public class PreferenceManager {
         editor.apply();
     }
 
+    public String getRoomDisplayName() {
+        return preferences.getString(PREFERENCES_ROOM_DISPLAY_NAME, null);
+    }
+
+    public void setRoomDisplayName(String newName) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_ROOM_DISPLAY_NAME, newName);
+        editor.apply();
+    }
 
     public int getDefaultDurationMinutes() {
         return preferences.getInt(PREFERENCES_DEFAULT_DURATION_MINUTES, 45);
