@@ -56,20 +56,23 @@ public class RemoteConfigActivity extends AppCompatActivity {
         String language = data.getQueryParameter(LANGUAGE);
         String roomDisplayName = data.getQueryParameter(ROOM_DISPLAY_NAME);
 
+        PreferenceManager preferences = PreferenceManager.getInstance(this);
+
         boolean accountSet = false;
         boolean roomSet = false;
         if (account == null
             && defaultRoom == null
             && defaultDurationString == null
             && maxDurationString == null
-            && language == null) {
+            && language == null
+            && roomDisplayName ==null) {
             Log.d(LOG_TAG, "Parameters not found, opening the wizard");
             final Intent i = new Intent(this, WizardActivity.class);
             startActivity(i);
         }
         if (account != null) {
             if (accountExists(account)) {
-                PreferenceManager preferences = PreferenceManager.getInstance(this);
+
                 preferences.setDefaultCalendarAccount(account);
                 accountSet = true;
                 Log.d(LOG_TAG, "Account configured: " + preferences.getDefaultCalendarAccount());
@@ -78,7 +81,6 @@ public class RemoteConfigActivity extends AppCompatActivity {
             }
         }
         if (defaultRoom != null) {
-            PreferenceManager preferences = PreferenceManager.getInstance(this);
             preferences.setSelectedRoom(defaultRoom);
             roomSet = true;
             Log.d(LOG_TAG, "Room configured: " + preferences.getSelectedRoom());
