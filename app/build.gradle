@@ -7,7 +7,7 @@ apply from: "$project.rootDir/tools/script-pmd.gradle"
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-    
+
     defaultConfig {
         applicationId "com.futurice.android.reservator"
         versionCode 24
@@ -27,7 +27,7 @@ android {
             // RESERVATOR_KEY_PASSWORD=realPasswordHere
             // RESERVATOR_KEYSTORE_PASSWORD=realPasswordHere
 
-            storeFile file("~/reservatorkeystore")
+            storeFile "${System.properties['user.home']}${File.separator}reservatorkeystore" as File
             if (storeFile.exists()) {
                 keyPassword RESERVATOR_KEY_PASSWORD
                 storePassword RESERVATOR_KEYSTORE_PASSWORD
