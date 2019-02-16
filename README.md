@@ -47,6 +47,7 @@ The config variables are:
 3. lang
 4. max_duration
 5. default_duration
+6. room_display_name
 
 The errors go to the Android log and can be read by adb logcat.
 
