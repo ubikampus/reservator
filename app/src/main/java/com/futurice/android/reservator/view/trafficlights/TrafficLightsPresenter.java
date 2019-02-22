@@ -215,16 +215,16 @@ public class TrafficLightsPresenter implements
 
     @Override
     public void onReservationMinutesChanged(int newMinutes) {
-        if (newMinutes <= 0) {
-            this.cancelCurrentReservation();
-        }
-        else {
+        //if (newMinutes <= 0) {
+        //    this.cancelCurrentReservation();
+        //}
+        //else {
 
             DateTime startTime = this.currentReservation.getStartTime();
 
             DateTime newEndTime = new DateTime(System.currentTimeMillis() + (newMinutes* 60 * 1000));
             this.modifyCurrentReservationTimeSpan(new TimeSpan(startTime,newEndTime));
-        }
+        //}
     }
 
     @Override
