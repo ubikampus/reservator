@@ -45,9 +45,10 @@ The config variables are:
 1. account
 2. default_room
 3. lang
-4. max_duration
-5. default_duration
+4. max_duration (minutes)
+5. default_duration (minutes)
 6. room_display_name
+7. closing_time (do not allow reservations extend beyond this time, HH:mm)
 
 The errors go to the Android log and can be read by adb logcat.
 

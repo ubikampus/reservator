@@ -24,7 +24,7 @@ import com.futurice.android.reservator.model.TimeSpan;
 public class WeekView extends RelativeLayout implements OnClickListener {
 
     public static final int DAY_START_TIME = 60 * 8; // minutes from midnight
-    public static final int DAY_END_TIME = 60 * 20;
+    public static final int DAY_END_TIME = 30 * 37;
     public static final int NORMALIZATION_START_HOUR = 20;
     private int numberOfDaysToShow;
     private int textColor, weekTextColor, gridColor, reservationTextColor;

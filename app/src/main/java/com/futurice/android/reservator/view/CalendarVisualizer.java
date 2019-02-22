@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -459,7 +460,7 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
         drawFadingEdges(c, calendarAreaRect);
         drawTimeLabels(c, timeLabelRect);
         drawCurrentTimeIndicators(c, calendarAreaRect);
-
+        Log.d("debug","here");
         if (this.tentativeTimeSpan != null)
             drawTentativeArea(c, calendarAreaRect, this.tentativeTimeSpan);
 

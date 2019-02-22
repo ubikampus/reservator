@@ -21,6 +21,8 @@ public class RemoteConfigActivity extends AppCompatActivity {
     public static final String DEFAULT_DURATION = "default_duration";
     public static final String MAX_DURATION = "max_duration";
     public static final String ROOM_DISPLAY_NAME = "room_display_name";
+    public static final String CLOSING_TIME = "closing_time";
+
     public static final String LOG_TAG = "RemoteConfigActivity";
 
     private Intent intent;
@@ -55,6 +57,7 @@ public class RemoteConfigActivity extends AppCompatActivity {
         String maxDurationString = data.getQueryParameter(MAX_DURATION);
         String language = data.getQueryParameter(LANGUAGE);
         String roomDisplayName = data.getQueryParameter(ROOM_DISPLAY_NAME);
+        String closingTime = data.getQueryParameter(CLOSING_TIME);
 
         PreferenceManager preferences = PreferenceManager.getInstance(this);
 
@@ -65,7 +68,8 @@ public class RemoteConfigActivity extends AppCompatActivity {
             && defaultDurationString == null
             && maxDurationString == null
             && language == null
-            && roomDisplayName ==null) {
+            && roomDisplayName ==null
+            && closingTime==null) {
             Log.d(LOG_TAG, "Parameters not found, opening the wizard");
             final Intent i = new Intent(this, WizardActivity.class);
             startActivity(i);
@@ -102,7 +106,12 @@ public class RemoteConfigActivity extends AppCompatActivity {
         if (roomDisplayName != null) {
             setRoomDisplayName(roomDisplayName);
         }
-        if (accountSet && roomSet) {
+
+        if (closingTime != null) {
+            setClosingTime(closingTime);
+        }
+
+            if (accountSet && roomSet) {
             PreferenceManager.getInstance(this).setApplicationConfigured(true);
             Log.d(LOG_TAG, "Application configured: " + PreferenceManager.getInstance(this)
                 .getApplicationConfigured());
@@ -161,6 +170,22 @@ public class RemoteConfigActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             Log.d(LOG_TAG,
                 "Could not set max duration, " + durationString + " is not a " + "number");
+        }
+    }
+
+
+    private void setClosingTime(String closingTimeString) {
+        try {
+            String[] parts = closingTimeString.split(":");
+
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+
+            PreferenceManager.getInstance(this).setClosingHours(hours);
+            PreferenceManager.getInstance(this).setClosingMinutes(minutes);
+        } catch (NumberFormatException e) {
+            Log.d(LOG_TAG,
+                    "Could not set calendar closing time, " + closingTimeString + " is not in format HH:mm");
         }
     }
 

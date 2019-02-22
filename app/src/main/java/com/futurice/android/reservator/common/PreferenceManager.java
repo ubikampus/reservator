@@ -37,6 +37,9 @@ public class PreferenceManager {
     final static String PREFERENCES_MAX_DURATION_MINUTES = "maxDurationMinutes";
     final static String PREFERENCES_SELECTED_LANGUAGE = "language";
     final static String PREFERENCES_ROOM_DISPLAY_NAME = "roomDisplayName";
+    final static String PREFERENCES_CLOSING_HOURS = "closingHours";
+    final static String PREFERENCES_CLOSING_MINUTES = "closingMinutes";
+
 
     final SharedPreferences preferences;
 
@@ -138,6 +141,27 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(PREFERENCES_MAX_DURATION_MINUTES, value);
         editor.apply();
+    }
+
+    public void setClosingHours(int value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(PREFERENCES_CLOSING_HOURS, value);
+        editor.apply();
+    }
+
+
+    public void setClosingMinutes(int value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(PREFERENCES_CLOSING_MINUTES, value);
+        editor.apply();
+    }
+
+    public int getClosingHours() {
+        return preferences.getInt(PREFERENCES_CLOSING_HOURS, -1);
+    }
+
+    public int getClosingMinutes() {
+        return preferences.getInt(PREFERENCES_CLOSING_MINUTES, -1);
     }
 
     public boolean getApplicationConfigured() {

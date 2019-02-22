@@ -185,8 +185,11 @@ public class TrafficLightsPresenter implements
 
     @Override
     public void onMinutesUpdated(int minutes) {
-        if (this.currentReservation == null)
+        //Log.d("debug","onMinutesUpdated: "+minutes);
+        if (this.currentReservation == null) {
             this.dayCalendarFragment.setTentativeTimeSpan(new TimeSpan(new DateTime(), new DateTime(System.currentTimeMillis() + (minutes * 60 * 1000))));
+            this.dayCalendarFragment.updateRoomData(this.room);
+        }
     }
 
     @Override
@@ -351,6 +354,32 @@ public class TrafficLightsPresenter implements
         }
     }
     */
+
+    private int getMinutesUntilClosingTime() {
+        int closingHours = PreferenceManager.getInstance(activity).getClosingHours();       //closingTime is in minutes since midnight
+        int closingMinutes = PreferenceManager.getInstance(activity).getClosingMinutes();       //closingTime is in minutes since midnight
+
+        if (closingHours == -1 || closingMinutes == -1)
+            return Integer.MAX_VALUE;
+
+
+        java.util.Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, closingHours);
+        cal.set(Calendar.MINUTE, closingMinutes);
+
+        java.util.Calendar currentCal = Calendar.getInstance();
+
+        long differenceInMillis = cal.getTimeInMillis() - currentCal.getTimeInMillis();
+
+        int differenceInMinutes = (int)differenceInMillis / (1000*60);
+
+        if (differenceInMinutes < 0)
+            differenceInMinutes = 0;
+
+        return differenceInMinutes;
+    }
+
+
     private void showReservationDetails(Reservation r, TimeSpan nextFreeSlot) {
         if (r == null) {
             this.roomStatusFragment.setMeetingNameText("");
@@ -400,6 +429,11 @@ public class TrafficLightsPresenter implements
 
         if (remainingMinutes > tempMax)
             tempMax = remainingMinutes;
+
+        int minutesUntilClosingTime = this.getMinutesUntilClosingTime();
+        if (minutesUntilClosingTime != Integer.MAX_VALUE && minutesUntilClosingTime < tempMax )
+            tempMax = minutesUntilClosingTime;
+
 
         if (this.ongoingReservationFragment != null) {
             this.ongoingReservationFragment.setMaxMinutes(tempMax);
@@ -476,8 +510,13 @@ public class TrafficLightsPresenter implements
         this.roomStatusFragment.setMeetingNameText("");
         this.roomStatusFragment.setStatusUntilText(resources.getString(R.string.free_for_the_day));
 
+        int tempMinutes = PreferenceManager.getInstance(activity).getMaxDurationMinutes();
 
-        this.roomReservationFragment.setMaxMinutes(PreferenceManager.getInstance(activity).getMaxDurationMinutes());
+        int minutesUntilClosingTime = this.getMinutesUntilClosingTime();
+        if (minutesUntilClosingTime != Integer.MAX_VALUE && minutesUntilClosingTime < tempMinutes )
+            tempMinutes = minutesUntilClosingTime;
+
+        this.roomReservationFragment.setMaxMinutes(tempMinutes);
 
         int minutes = this.roomReservationFragment.getCurrentMinutes();
         this.dayCalendarFragment.setTentativeTimeSpan(new TimeSpan(new DateTime(), new DateTime(System.currentTimeMillis() + (minutes * 60 * 1000))));
@@ -511,6 +550,11 @@ public class TrafficLightsPresenter implements
 
         if (freeMinutes < PreferenceManager.getInstance(activity).getMaxDurationMinutes())
             tempMinutes = freeMinutes;
+
+        int minutesUntilClosingTime = this.getMinutesUntilClosingTime();
+        if (minutesUntilClosingTime != Integer.MAX_VALUE && minutesUntilClosingTime < tempMinutes )
+            tempMinutes = minutesUntilClosingTime;
+
         this.roomReservationFragment.setMaxMinutes(tempMinutes);
 
         int minutes = this.roomReservationFragment.getCurrentMinutes();

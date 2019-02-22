@@ -27,11 +27,13 @@ android {
             // RESERVATOR_KEY_PASSWORD=realPasswordHere
             // RESERVATOR_KEYSTORE_PASSWORD=realPasswordHere
 
+
             storeFile "${System.properties['user.home']}${File.separator}reservatorkeystore" as File
             if (storeFile.exists()) {
                 keyPassword RESERVATOR_KEY_PASSWORD
                 storePassword RESERVATOR_KEYSTORE_PASSWORD
             }
+
         }
     }
 
