@@ -50,9 +50,14 @@ import java.util.List;
 import butterknife.ButterKnife;
 import java.util.Locale;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class MainActivity extends FragmentActivity {
 
     public final int PERMISSIONS_REQUEST = 234;
+    public final int SETTINGS_REQUEST = 235;
+
     private boolean permissionsGot = false;
     private boolean initCompleted = false;
     private boolean uiStarted = false;
@@ -369,27 +374,25 @@ public class MainActivity extends FragmentActivity {
             this.startUi();
     }
 
-    private void checkConfiguration() {
+    private boolean isConfigurationOk() {
         if ((!PreferenceManager.getInstance(this).getApplicationConfigured())) {
-            showWizardActivity();
-            return;
+            return false;
         }
         // Configuration should now be ok, try using it
         ((ReservatorApplication) getApplication()).resetDataProxy();
 
         // If the configuration did not work, open the configuration wizard again
         if (((ReservatorApplication)getApplication()).getDataProxy().hasFatalError() ) {
-            showWizardActivity();
-            return;
+            return false;
         }
 
-        onInitCompleted();
+        return true;
     }
     // Functionality moved from LoginActivity
 
     private void showWizardActivity() {
         final Intent i = new Intent(this, WizardActivity.class);
-        startActivity(i);
+        startActivityForResult(i, SETTINGS_REQUEST);
     }
 
     // This will be called when WizardActivity returns
@@ -397,14 +400,25 @@ public class MainActivity extends FragmentActivity {
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         //Re-check if configuration is now correct
-        checkConfiguration();
-    }
+        if (isConfigurationOk()) {
+            Intent intent = getIntent();
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+            finish();
+            startActivity(intent);
+        }
+        else {
+            showWizardActivity();
+        }
+        }
 
     // Functionality moved from CheckPermissionsActivity
 
 
     public void onPermissionsOk() {
-        checkConfiguration();
+        if (isConfigurationOk())
+            onInitCompleted();
+        else
+            showWizardActivity();
     }
 
     @Override

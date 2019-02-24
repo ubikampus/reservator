@@ -35,6 +35,7 @@
     <string name="hintText">Hint: You can use your tablet\'s address book contacts for reserving.</string>
     <string name="goToAccountSettings">Go to account settings</string>
     <string name="defaultRoomSelectionTitle">Select default room</string>
+    <string name="languageSelectionTitle">Select language</string>
     <string name="calendarResourcesHelpText">If this option is enabled, non-resource calendars will be shown.</string>
     <string name="permission_request_title">Permission Request</string>
     <string name="permission_request_reason">We need your permission to access your contacts and calendar in order for the app to work.</string>

@@ -460,7 +460,7 @@ public class CalendarVisualizer extends HorizontalScrollView implements Reservat
         drawFadingEdges(c, calendarAreaRect);
         drawTimeLabels(c, timeLabelRect);
         drawCurrentTimeIndicators(c, calendarAreaRect);
-        Log.d("debug","here");
+
         if (this.tentativeTimeSpan != null)
             drawTentativeArea(c, calendarAreaRect, this.tentativeTimeSpan);
 
