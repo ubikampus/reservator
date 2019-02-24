@@ -42,7 +42,7 @@ public final class WizardLanguageSelectionFragment extends android.support.v4.ap
         View view = inflater.inflate(R.layout.wizard_account_selection, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        title.setText(R.string.defaultRoomSelectionTitle);
+        title.setText(R.string.languageSelectionTitle);
         return view;
     }
 

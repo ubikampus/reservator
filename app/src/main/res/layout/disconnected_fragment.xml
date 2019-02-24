@@ -19,7 +19,7 @@
         android:id="@+id/disconnected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bookNow"
+        android:layout_below="@id/roomStatusFragment"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:drawableTop="@drawable/disconnected"

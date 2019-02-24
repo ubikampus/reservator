@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="1dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginBottom="0dp"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:padding="10dip"
+    android:background="@color/TrafficLightReserved"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+
+    <TextView
+        android:id="@+id/ongoingReservationLeft"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="104dp"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimary70Alpha"
+        android:text="@string/reservation_remaining"
+        android:textAlignment="center"
+        android:textIsSelectable="false"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/ongoingSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:max="90"
+        android:progress="30"
+        android:progressDrawable="@drawable/seekbar_reserved"
+        android:thumb="@drawable/seekthumb_reserved"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barDurationText"
+        app:layout_constraintVertical_bias="0.0"></SeekBar>
+
+    <TextView
+        android:id="@+id/barDurationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="130dp"
+        android:text="30 min"
+        android:textAlignment="center"
+        android:textColor="#F8F8F8"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@+id/ongoingReservationLeft"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/modifyPrompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/modifyPrompt"
+        android:textAlignment="center"
+        android:textColor="#F8F8F8"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ongoingSeekBar" />
+
+    <ProgressBar
+        android:id="@+id/cangeProgressBar"
+        style="@style/CustomProgressBar"
+        android:layout_width="400dp"
+        android:layout_height="13dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ongoingSeekBar"
+        app:layout_constraintTop_toBottomOf="@+id/modifyPrompt" />
+
+    <Button
+        android:id="@+id/cancelReservationButton"
+        android:layout_width="280dp"
+        android:layout_height="92dp"
+        android:layout_alignTop="@+id/nameInput"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_toEndOf="@+id/nameInput"
+        android:background="@drawable/reserve_button"
+        android:text="@string/cancel_reservation"
+        android:textColor="@color/TrafficLightReserved"
+        android:textSize="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cancelChangeButton"
+        app:layout_constraintVertical_bias="0.092"></Button>
+
+    <Button
+        android:id="@+id/cancelChangeButton"
+        android:layout_width="600dp"
+        android:layout_height="80dp"
+        android:text="@string/cancelChange"
+        android:textColor="#F8F8F8"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cangeProgressBar"></Button>
+
+
+
+
+</android.support.constraint.ConstraintLayout>
+
+

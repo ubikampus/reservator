@@ -76,7 +76,8 @@ public final class WizardActivity extends AppIntro {
 
         PreferenceManager.getInstance(this).setApplicationConfigured(true);
 
-        final Intent i = new Intent(this, LoginActivity.class);
-        startActivity(i);
+        finish();
+        //final Intent i = new Intent(this, LoginActivity.class);
+        //startActivity(i);
     }
 }
