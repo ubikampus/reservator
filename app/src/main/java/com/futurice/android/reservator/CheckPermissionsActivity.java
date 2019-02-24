@@ -54,38 +54,25 @@ public class CheckPermissionsActivity extends AppCompatActivity {
         finish();
     }
 
-    public boolean checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.READ_CALENDAR)
-                        != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,
-                        Manifest.permission
-                                .WRITE_CALENDAR)
-                        != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest
-                            .permission.READ_CONTACTS) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest
-                                    .permission.READ_CALENDAR) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest
-                                    .permission.WRITE_CALENDAR)) {
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.permission_request_title)
+    public boolean checkPermissions()
+        {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+            {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALENDAR) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR))
+                {
+                new AlertDialog.Builder(this).setTitle(R.string.permission_request_title)
                         .setMessage(R.string.permission_request_reason)
-                        .setPositiveButton("Ok",
-                                new DialogInterface
+                        .setPositiveButton("Ok", new DialogInterface
                                         .OnClickListener() {
                                     @Override
                                     public void onClick(
                                             DialogInterface dialog,
                                             int which) {
-                                        ActivityCompat
-                                                .requestPermissions(
+                                        ActivityCompat.requestPermissions(
                                                         CheckPermissionsActivity.this,
                                                         new String[]{
                                                                 Manifest.permission.READ_CONTACTS,
@@ -106,7 +93,9 @@ public class CheckPermissionsActivity extends AppCompatActivity {
                                     }
                                 })
                         .show();
-            } else {
+                }
+
+                else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{
                                 Manifest.permission
@@ -117,7 +106,7 @@ public class CheckPermissionsActivity extends AppCompatActivity {
                                         .WRITE_CALENDAR
                         },
                         PERMISSIONS_REQUEST);
-            }
+                }
             return false;
         } else {
             return true;

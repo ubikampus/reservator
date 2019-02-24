@@ -58,21 +58,20 @@
             android:name=".CheckPermissionsActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/Theme.AppCompat">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="false"
             android:name=".MainActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <receiver android:name=".CalendarStateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PROVIDER_CHANGED" />
