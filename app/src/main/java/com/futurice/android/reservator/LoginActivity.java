@@ -29,7 +29,7 @@ public class LoginActivity extends ReservatorActivity
     super.onCreate(savedInstanceState);
 
     if (!PreferenceManager.getInstance(this)
-        .getApplicationConfigured()) {
+            .getApplicationConfigured()) {
       showWizard();
       return;
     }

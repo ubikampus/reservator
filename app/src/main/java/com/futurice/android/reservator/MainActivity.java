@@ -1,13 +1,17 @@
 package com.futurice.android.reservator;
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -15,10 +19,12 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -30,6 +36,7 @@ import android.widget.Toast;
 
 import com.futurice.android.reservator.common.LedHelper;
 import com.futurice.android.reservator.common.LocaleManager;
+import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.Model;
 import com.futurice.android.reservator.view.trafficlights.TrafficLightsPageFragment;
 import com.futurice.android.reservator.view.trafficlights.TrafficLightsPresenter;
@@ -44,6 +51,11 @@ import butterknife.ButterKnife;
 import java.util.Locale;
 
 public class MainActivity extends FragmentActivity {
+
+    public final int PERMISSIONS_REQUEST = 234;
+    private boolean permissionsGot = false;
+    private boolean initCompleted = false;
+    private boolean uiStarted = false;
 
     private final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -254,11 +266,6 @@ public class MainActivity extends FragmentActivity {
         return accountsList.toArray(new String[accountsList.size()]);
     }
 
-    private void showSetupWizard() {
-        final Intent i = new Intent(this, WizardActivity.class);
-        startActivity(i);
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event){
 
@@ -293,6 +300,19 @@ public class MainActivity extends FragmentActivity {
                 0,
                 0);
 
+        this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
+        this.registerReceiver(kioskOnReceiver, new IntentFilter(KioskStateReceiver.KIOSK_ON));
+        this.registerReceiver(kioskOffReceiver, new IntentFilter(KioskStateReceiver.KIOSK_OFF));
+        //Log.d("Futurice","componentName="+DeviceAdmin.getComponentName(this));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    private void startUi() {
         this.fragmentManager = getSupportFragmentManager();
         this.trafficLightsPageFragment = new TrafficLightsPageFragment();
 
@@ -307,26 +327,11 @@ public class MainActivity extends FragmentActivity {
 
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
-
-
-        this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
-        this.registerReceiver(kioskOnReceiver, new IntentFilter(KioskStateReceiver.KIOSK_ON));
-        this.registerReceiver(kioskOffReceiver, new IntentFilter(KioskStateReceiver.KIOSK_OFF));
-        //Log.d("Futurice","componentName="+DeviceAdmin.getComponentName(this));
+        this.uiStarted = true;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (getAvailableAccounts().length <= 0) {
-            showSetupWizard();
-        }
-    }
-
 
     public void onCalendarUpdated() {
-        if (this.model != null)
+        if (this.model != null && this.initCompleted && this.uiStarted)
             this.model.getDataProxy().refreshRoomReservations(this.model.getFavoriteRoom());
     }
 
@@ -357,4 +362,132 @@ public class MainActivity extends FragmentActivity {
         return super.dispatchTouchEvent(event);
     }
 
+    private void onInitCompleted() {
+        initCompleted = true;
+        //this.model.getDataProxy().refreshRoomReservations(this.model.getFavoriteRoom());
+        if (!uiStarted)
+            this.startUi();
+    }
+
+    private void checkConfiguration() {
+        if ((!PreferenceManager.getInstance(this).getApplicationConfigured())) {
+            showWizardActivity();
+            return;
+        }
+        // Configuration should now be ok, try using it
+        ((ReservatorApplication) getApplication()).resetDataProxy();
+
+        // If the configuration did not work, open the configuration wizard again
+        if (((ReservatorApplication)getApplication()).getDataProxy().hasFatalError() ) {
+            showWizardActivity();
+            return;
+        }
+
+        onInitCompleted();
+    }
+    // Functionality moved from LoginActivity
+
+    private void showWizardActivity() {
+        final Intent i = new Intent(this, WizardActivity.class);
+        startActivity(i);
+    }
+
+    // This will be called when WizardActivity returns
+    @Override
+    protected void onActivityResult(
+            int requestCode, int resultCode, Intent data) {
+        //Re-check if configuration is now correct
+        checkConfiguration();
+    }
+
+    // Functionality moved from CheckPermissionsActivity
+
+
+    public void onPermissionsOk() {
+        checkConfiguration();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!permissionsGot) {
+            permissionsGot = checkPermissions();
+            if (permissionsGot) {
+                onPermissionsOk();
+            }
+        } else {
+            onPermissionsOk();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST: {
+                if (grantResults.length >= 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    onPermissionsOk();
+                }
+                return;
+            }
+        }
+    }
+
+    public boolean checkPermissions()
+    {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALENDAR) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR))
+            {
+                new AlertDialog.Builder(this).setTitle(R.string.permission_request_title)
+                        .setMessage(R.string.permission_request_reason)
+                        .setPositiveButton("Ok", new DialogInterface
+                                .OnClickListener() {
+                            @Override
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which) {
+                                ActivityCompat.requestPermissions(
+                                        MainActivity.this,
+                                        new String[]{
+                                                Manifest.permission.READ_CONTACTS,
+                                                Manifest.permission.READ_CALENDAR,
+                                                Manifest.permission.WRITE_CALENDAR
+                                        },
+                                        PERMISSIONS_REQUEST);
+                            }
+                        })
+                        .setNegativeButton("Dismiss",
+                                new DialogInterface
+                                        .OnClickListener() {
+                                    @Override
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                        .show();
+            }
+
+            else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{
+                                Manifest.permission
+                                        .READ_CONTACTS,
+                                Manifest.permission
+                                        .READ_CALENDAR,
+                                Manifest.permission
+                                        .WRITE_CALENDAR
+                        },
+                        PERMISSIONS_REQUEST);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
