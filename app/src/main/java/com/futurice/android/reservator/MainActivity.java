@@ -3,6 +3,7 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
@@ -19,6 +20,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -87,6 +89,19 @@ public class MainActivity extends FragmentActivity {
         DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         // get this app package name
         ComponentName mDPM = new ComponentName(this, MyAdmin.class);
+
+        /*
+        List<ComponentName> admins = myDevicePolicyManager.getActiveAdmins();
+        String result = "DEVICE ADMINS:\n";
+
+        for (int i=0; i<admins.size(); i++) {
+            result += admins.get(i).toString()+"\n";
+        }
+
+        result+="THIS.PACKAGENAME:\n"+this.getPackageName();
+
+        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+        */
 
         if (myDevicePolicyManager.isDeviceOwnerApp(this.getPackageName())) {
             Log.d("MainActivity", "App is the device owner");
@@ -324,15 +339,38 @@ public class MainActivity extends FragmentActivity {
         // do nothing
     }
 
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!hasFocus) {
+            windowCloseHandler.post(windowCloserRunnable);
+        }
+    }
+    private void toggleRecents() {
+        Intent closeRecents = new Intent("com.android.systemui.recent.action.TOGGLE_RECENTS");
+        closeRecents.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        ComponentName recents = new ComponentName("com.android.systemui", "com.android.systemui.recent.RecentsActivity");
+        closeRecents.setComponent(recents);
+        this.startActivity(closeRecents);
+    }
+    private Handler windowCloseHandler = new Handler();
+    private Runnable windowCloserRunnable = new Runnable() {@Override public void run() {
+        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+        if (cn != null && cn.getClassName().equals("com.android.systemui.recent.RecentsActivity")) {
+            toggleRecents();
+        }
+    }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        LocaleManager.onAttach(getApplicationContext());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        LocaleManager.onAttach(getApplicationContext());
-
-        this.getWindow().getDecorView().setSystemUiVisibility(this.flags);
 
         // Mute the audio
 
@@ -345,12 +383,15 @@ public class MainActivity extends FragmentActivity {
         this.registerReceiver(calendarChangeReceiver, new IntentFilter(CalendarStateReceiver.CALENDAR_CHANGED));
         this.registerReceiver(kioskOnReceiver, new IntentFilter(KioskStateReceiver.KIOSK_ON));
         this.registerReceiver(kioskOffReceiver, new IntentFilter(KioskStateReceiver.KIOSK_OFF));
+        this.turnKioskOn();
         //Log.d("Futurice","componentName="+DeviceAdmin.getComponentName(this));
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        this.getWindow().getDecorView().setSystemUiVisibility(this.flags);
     }
 
 
