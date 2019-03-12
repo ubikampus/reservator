@@ -178,16 +178,17 @@ public abstract class DataProxy {
      *
      * @author vman
      */
-    private class RoomReservationRefreshTask extends AsyncTask<Room, Void, Room> {
+    private class RoomReservationRefreshTask extends AsyncTask<Room, Void, ArrayList<Reservation>> {
         ReservatorException e;
 
+        private Room room = null;
+
         @Override
-        protected Room doInBackground(Room... rooms) {
-            Room room = rooms[0];
+        protected ArrayList<Reservation> doInBackground(Room... rooms) {
+            room = rooms[0];
             try {
                 ArrayList<Reservation> reservations = getRoomReservations(room);
-                room.setReservations(reservations);
-                return room;
+                return reservations;
             } catch (ReservatorException e) {
                 this.e = e;
                 return null;
@@ -195,10 +196,11 @@ public abstract class DataProxy {
         }
 
         @Override
-        protected void onPostExecute(Room room) {
+        protected void onPostExecute(ArrayList<Reservation> reservations) {
             if (room == null) {
                 notifyRefreshFailed(e);
             } else {
+                room.setReservations(reservations);
                 notifyRoomReservationsUpdated(room);
             }
         }
