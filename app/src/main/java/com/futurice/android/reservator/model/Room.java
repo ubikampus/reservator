@@ -39,7 +39,9 @@ public class Room implements Serializable {
     }
 
     public void setReservations(ArrayList<Reservation> reservations) {
-        this.reservations = reservations;
+        synchronized (this.reservations) {
+            this.reservations = reservations;
+        }
         Collections.sort(reservations);
     }
 
@@ -50,23 +52,17 @@ public class Room implements Serializable {
 
     public boolean isFree() {
         DateTime now = new DateTime();
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation r = (Reservation) iterator.next();
-            if (r.getStartTime().before(now) && r.getEndTime().after(now)) {
-                return false;
-            }
-        }
-
-        return true;
+        return isFreeAt(now);
     }
 
     public boolean isFreeAt(DateTime time) {
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation r = (Reservation) iterator.next();
-            if (r.getStartTime().before(time) && r.getEndTime().after(time)) {
-                return false;
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getStartTime().before(time) && r.getEndTime().after(time)) {
+                    return false;
+                }
             }
         }
         return true;
@@ -76,11 +72,13 @@ public class Room implements Serializable {
         DateTime now = new DateTime();
         DateTime bookingThresholdEnd = now.add(Calendar.MINUTE, RESERVED_THRESHOLD_MINUTES);
 
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation r = (Reservation) iterator.next();
-            if (r.getEndTime().after(now) && r.getStartTime().before(bookingThresholdEnd)) {
-                return r;
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getEndTime().after(now) && r.getStartTime().before(bookingThresholdEnd)) {
+                    return r;
+                }
             }
         }
 
@@ -95,11 +93,13 @@ public class Room implements Serializable {
      * @return Integer.MAX_VALUE if no reservations in future
      */
     public int minutesFreeFrom(DateTime from) {
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation r = (Reservation) iterator.next();
-            if (r.getStartTime().after(from)) {
-                return (int) ((r.getStartTime().getTimeInMillis() - from.getTimeInMillis()) / 60000);
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getStartTime().after(from)) {
+                    return (int) ((r.getStartTime().getTimeInMillis() - from.getTimeInMillis()) / 60000);
+                }
             }
         }
 
@@ -120,12 +120,14 @@ public class Room implements Serializable {
     public int reservedForFrom(DateTime from) {
         DateTime to = from;
 
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation r = (Reservation) iterator.next();
-            if (r.getStartTime().before(to) && r.getEndTime().after(to)) {
-                to = r.getEndTime();
-                to = to.add(Calendar.MINUTE, 5);
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getStartTime().before(to) && r.getEndTime().after(to)) {
+                    to = r.getEndTime();
+                    to = to.add(Calendar.MINUTE, 5);
+                }
             }
         }
 
@@ -146,15 +148,17 @@ public class Room implements Serializable {
         DateTime max = now.add(Calendar.DAY_OF_YEAR, 1).stripTime();
 
 
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()) {
-            Reservation r = (Reservation) iterator.next();
-            // bound nextFreeTime to
-            if (r.getStartTime().after(max)) {
-                return new TimeSpan(now, max);
-            }
-            if (r.getStartTime().after(now)) {
-                return new TimeSpan(now, r.getStartTime()); //TODO maybe there are many reservations after each other..
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                // bound nextFreeTime to
+                if (r.getStartTime().after(max)) {
+                    return new TimeSpan(now, max);
+                }
+                if (r.getStartTime().after(now)) {
+                    return new TimeSpan(now, r.getStartTime()); //TODO maybe there are many reservations after each other..
+                }
             }
         }
 
@@ -173,13 +177,15 @@ public class Room implements Serializable {
 
         TimeSpan candidateSlot = new TimeSpan(now, now.add(Calendar.MINUTE, length));
 
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()){
-            Reservation r = (Reservation) iterator.next();
-            if (r.getStartTime().afterOrEqual(candidateSlot.getEnd())) return candidateSlot;
-            if (r.getTimeSpan().intersects(candidateSlot)) {
-                if (r.getEndTime().afterOrEqual(max)) return null;
-                candidateSlot = new TimeSpan(r.getEndTime(), r.getEndTime().add(Calendar.MINUTE, length));
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getStartTime().afterOrEqual(candidateSlot.getEnd())) return candidateSlot;
+                if (r.getTimeSpan().intersects(candidateSlot)) {
+                    if (r.getEndTime().afterOrEqual(max)) return null;
+                    candidateSlot = new TimeSpan(r.getEndTime(), r.getEndTime().add(Calendar.MINUTE, length));
+                }
             }
         }
 
@@ -192,11 +198,13 @@ public class Room implements Serializable {
 
     public List<Reservation> getReservationsForTimeSpan(TimeSpan ts) {
         List<Reservation> daysReservations = new ArrayList<Reservation>();
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()){
-            Reservation r = (Reservation) iterator.next();
-            if (r.getTimeSpan().intersects(ts)) {
-                daysReservations.add(r);
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getTimeSpan().intersects(ts)) {
+                    daysReservations.add(r);
+                }
             }
         }
         return daysReservations;
@@ -256,11 +264,13 @@ public class Room implements Serializable {
 
         TimeSpan restOfDay = new TimeSpan(now, max);
 
-        Iterator iterator = reservations.iterator();
-        while (iterator.hasNext()){
-            Reservation r = (Reservation) iterator.next();
-            if (r.getTimeSpan().intersects(restOfDay)) return false;
-            if (r.getStartTime().after(max)) return true;
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getTimeSpan().intersects(restOfDay)) return false;
+                if (r.getStartTime().after(max)) return true;
+            }
         }
 
         return true;
