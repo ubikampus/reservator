@@ -98,7 +98,7 @@ public class MqttHelper {
             return;
         }
         String serverAddress = PreferenceManager.getInstance(context).getMqttServerAddress();
-        Log.d("MqttHelper", serverAddress);
+        Log.d("MqttHelper", "serverAddress: "+ serverAddress);
         if (serverAddress != null) {
             privateKey = readStringFromFile(context, "/sdcard/tablets-private-key.pem");
             if (privateKey != null) {
