@@ -119,8 +119,20 @@ public class Room implements Serializable {
         return null;
     }
 
-    public Reservation getNextReservation() {
-        return nextReservationAfter(new DateTime());
+    public Reservation getNextReservationToday(DateTime now) {
+        DateTime max = now.add(Calendar.DAY_OF_YEAR, 1).stripTime();
+
+        TimeSpan restOfDay = new TimeSpan(now, max);
+
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getTimeSpan().intersects(restOfDay))
+                    return r;
+            }
+        }
+        return null;
     }
 
     public int minutesFreeFromNow() {

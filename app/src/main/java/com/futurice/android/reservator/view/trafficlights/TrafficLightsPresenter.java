@@ -131,15 +131,15 @@ public class TrafficLightsPresenter implements
 
         if (currentReservation != null) {
             currentId = currentReservation.getId();
-            currentTopic = currentReservation.getSubject();
+            currentTopic = resources.getString(R.string.status_reserved); //currentReservation.getSubject();
             currentStartTime = currentReservation.getStartTime().getTimeInMillis();
             currentEndTime = currentReservation.getEndTime().getTimeInMillis();
 
-            if (this.room != null && !this.room.isFreeRestOfDay()) {
-                Reservation nextReservation = this.room.getNextReservation();
+            if (this.room != null) {
+                Reservation nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime());
                 if (nextReservation != null) {
                     nextId = nextReservation.getId();
-                    nextTopic = nextReservation.getSubject();
+                    nextTopic = resources.getString(R.string.status_reserved); //nextReservation.getSubject();
                     nextStartTime = nextReservation.getStartTime().getTimeInMillis();
                     nextEndTime = nextReservation.getEndTime().getTimeInMillis();
                 }
@@ -164,15 +164,15 @@ public class TrafficLightsPresenter implements
 
         if (currentReservation != null) {
             currentId = currentReservation.getId();
-            currentTopic = currentReservation.getSubject();
+            currentTopic = resources.getString(R.string.status_reserved); //currentReservation.getSubject();
             currentStartTime = currentReservation.getStartTime().getTimeInMillis();
             currentEndTime = currentReservation.getEndTime().getTimeInMillis();
 
-            if (this.room != null && !this.room.isFreeRestOfDay()) {
-                Reservation nextReservation = this.room.getNextReservation();
+            if (this.room != null) {
+                Reservation nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime());;
                 if (nextReservation != null) {
                     nextId = nextReservation.getId();
-                    nextTopic = nextReservation.getSubject();
+                    nextTopic = resources.getString(R.string.status_reserved); //nextReservation.getSubject();
                     nextStartTime = nextReservation.getStartTime().getTimeInMillis();
                     nextEndTime = nextReservation.getEndTime().getTimeInMillis();
                 }
