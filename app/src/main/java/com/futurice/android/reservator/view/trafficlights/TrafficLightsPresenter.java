@@ -10,6 +10,7 @@ import android.os.Handler;
 import com.futurice.android.reservator.R;
 import com.futurice.android.reservator.common.Helpers;
 import com.futurice.android.reservator.common.LedHelper;
+import com.futurice.android.reservator.common.MqttHelper;
 import com.futurice.android.reservator.common.PreferenceManager;
 import com.futurice.android.reservator.model.DateTime;
 import com.futurice.android.reservator.model.Model;
@@ -35,9 +36,14 @@ public class TrafficLightsPresenter implements
         com.futurice.android.reservator.model.DataUpdatedListener,
         com.futurice.android.reservator.model.AddressBookUpdatedListener {
 
+    private static final int STATE_FREE = 1;
+    private static final int STATE_RESERVED = 2;
+
     final int QUICK_BOOK_THRESHOLD = 5; // minutes
     //final int MAX_QUICK_BOOK_MINUTES = 120; //minutes
    // final int DEFAULT_MINUTES = 45;
+
+    private int state = -1;
 
     private boolean connected = true;
     private boolean reservationChangeInProgess= false;
@@ -93,6 +99,93 @@ public class TrafficLightsPresenter implements
         this.refreshModel();
         this.updateOngoingReservationFragment();
     }
+
+
+    // State machine
+
+    private void setState(int newState) {
+        if (this.state == newState)
+            return;
+
+        if (this.state == STATE_RESERVED && newState != STATE_RESERVED) {
+            this.onReservationEnding();
+        }
+
+        if (this.state != STATE_RESERVED && newState == STATE_RESERVED) {
+            this.onReservationStarting();
+        }
+
+        this.state = newState;
+    }
+
+    private void onReservationStarting() {
+        String currentId = null;
+        String currentTopic = null;
+        long currentStartTime = -1;
+        long currentEndTime = -1;
+
+        String nextId = null;
+        String nextTopic = null;
+        long nextStartTime = -1;
+        long nextEndTime = -1;
+
+        if (currentReservation != null) {
+            currentId = currentReservation.getId();
+            currentTopic = currentReservation.getSubject();
+            currentStartTime = currentReservation.getStartTime().getTimeInMillis();
+            currentEndTime = currentReservation.getEndTime().getTimeInMillis();
+
+            if (this.room != null && !this.room.isFreeRestOfDay()) {
+                Reservation nextReservation = this.room.getNextReservation();
+                if (nextReservation != null) {
+                    nextId = nextReservation.getId();
+                    nextTopic = nextReservation.getSubject();
+                    nextStartTime = nextReservation.getStartTime().getTimeInMillis();
+                    nextEndTime = nextReservation.getEndTime().getTimeInMillis();
+                }
+            }
+        }
+
+
+        MqttHelper.getInstance(this.activity).reportReservationStarting(currentId, currentTopic, currentStartTime, currentEndTime,
+                nextId, nextTopic, nextStartTime, nextEndTime);
+    }
+
+    private void onReservationEnding() {
+        String currentId = null;
+        String currentTopic = null;
+        long currentStartTime = -1;
+        long currentEndTime = -1;
+
+        String nextId = null;
+        String nextTopic = null;
+        long nextStartTime = -1;
+        long nextEndTime = -1;
+
+        if (currentReservation != null) {
+            currentId = currentReservation.getId();
+            currentTopic = currentReservation.getSubject();
+            currentStartTime = currentReservation.getStartTime().getTimeInMillis();
+            currentEndTime = currentReservation.getEndTime().getTimeInMillis();
+
+            if (this.room != null && !this.room.isFreeRestOfDay()) {
+                Reservation nextReservation = this.room.getNextReservation();
+                if (nextReservation != null) {
+                    nextId = nextReservation.getId();
+                    nextTopic = nextReservation.getSubject();
+                    nextStartTime = nextReservation.getStartTime().getTimeInMillis();
+                    nextEndTime = nextReservation.getEndTime().getTimeInMillis();
+                }
+            }
+        }
+
+        MqttHelper.getInstance(this.activity).reportReservationEnding(currentId, currentTopic, currentStartTime, currentEndTime,
+                                                                    nextId, nextTopic, nextStartTime, nextEndTime);
+    }
+
+    // State machine ends
+
+
 
     public TrafficLightsPresenter(Activity activity, Model model) {
         this.activity = activity;
@@ -462,7 +555,6 @@ public class TrafficLightsPresenter implements
     }
 
     private void showReserved() {
-        this.currentReservation = this.room.getCurrentReservation();
         this.trafficLightsPageFragment.getView().setBackgroundColor(resources.getColor(R.color.TrafficLightReserved));
         this.roomStatusFragment.setStatusText(resources.getString(R.string.status_reserved));
         this.dayCalendarFragment.setTentativeTimeSpan(null);
@@ -584,6 +676,7 @@ public class TrafficLightsPresenter implements
             this.roomStatusFragment.setRoomTitleText(room.getName());
         }
         if (room.isBookable(QUICK_BOOK_THRESHOLD)) {
+            this.setState(STATE_FREE);
             if (room.isFreeRestOfDay()) {
                 this.showFreeForRestOfTheDay();
             } else {
@@ -596,6 +689,8 @@ public class TrafficLightsPresenter implements
                 }
             }
         } else {
+            this.currentReservation = this.room.getCurrentReservation();
+            this.setState(STATE_RESERVED);
             this.showReserved();
         }
         if (!this.reservationChangeInProgess)

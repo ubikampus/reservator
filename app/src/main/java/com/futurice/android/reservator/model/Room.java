@@ -106,6 +106,23 @@ public class Room implements Serializable {
         return Integer.MAX_VALUE;
     }
 
+    public Reservation nextReservationAfter(DateTime from) {
+        synchronized (this.reservations) {
+            Iterator iterator = reservations.iterator();
+            while (iterator.hasNext()) {
+                Reservation r = (Reservation) iterator.next();
+                if (r.getStartTime().after(from)) {
+                   return r;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Reservation getNextReservation() {
+        return nextReservationAfter(new DateTime());
+    }
+
     public int minutesFreeFromNow() {
         return minutesFreeFrom(new DateTime());
     }

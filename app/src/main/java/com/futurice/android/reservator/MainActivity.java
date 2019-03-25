@@ -390,8 +390,16 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         this.getWindow().getDecorView().setSystemUiVisibility(this.flags);
+
+        if (!permissionsGot) {
+            permissionsGot = checkPermissions();
+            if (permissionsGot) {
+                onPermissionsOk();
+            }
+        } else {
+            onPermissionsOk();
+        }
     }
 
 
@@ -502,6 +510,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        /*
         if (!permissionsGot) {
             permissionsGot = checkPermissions();
             if (permissionsGot) {
@@ -510,13 +519,14 @@ public class MainActivity extends FragmentActivity {
         } else {
             onPermissionsOk();
         }
+        */
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST: {
-                if (grantResults.length >= 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length >= 4 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                     onPermissionsOk();
                 }
                 return;
@@ -528,11 +538,14 @@ public class MainActivity extends FragmentActivity {
     {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        )
         {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CALENDAR) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR))
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE))
             {
                 new AlertDialog.Builder(this).setTitle(R.string.permission_request_title)
                         .setMessage(R.string.permission_request_reason)
@@ -547,7 +560,8 @@ public class MainActivity extends FragmentActivity {
                                         new String[]{
                                                 Manifest.permission.READ_CONTACTS,
                                                 Manifest.permission.READ_CALENDAR,
-                                                Manifest.permission.WRITE_CALENDAR
+                                                Manifest.permission.WRITE_CALENDAR,
+                                                Manifest.permission.READ_EXTERNAL_STORAGE
                                         },
                                         PERMISSIONS_REQUEST);
                             }
@@ -573,7 +587,9 @@ public class MainActivity extends FragmentActivity {
                                 Manifest.permission
                                         .READ_CALENDAR,
                                 Manifest.permission
-                                        .WRITE_CALENDAR
+                                        .WRITE_CALENDAR,
+                                Manifest.permission
+                                        .READ_EXTERNAL_STORAGE
                         },
                         PERMISSIONS_REQUEST);
             }

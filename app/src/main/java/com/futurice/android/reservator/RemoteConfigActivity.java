@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import com.futurice.android.reservator.common.LocaleManager;
+import com.futurice.android.reservator.common.MqttHelper;
 import com.futurice.android.reservator.common.PreferenceManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ public class RemoteConfigActivity extends AppCompatActivity {
     public static final String MAX_DURATION = "max_duration";
     public static final String ROOM_DISPLAY_NAME = "room_display_name";
     public static final String CLOSING_TIME = "closing_time";
+    public static final String MQTT_SERVER_ADDRESS = "mqtt_server_address";
+    public static final String MQTT_PREFIX = "mqtt_prefix";
 
     public static final String LOG_TAG = "RemoteConfigActivity";
 
@@ -58,6 +61,8 @@ public class RemoteConfigActivity extends AppCompatActivity {
         String language = data.getQueryParameter(LANGUAGE);
         String roomDisplayName = data.getQueryParameter(ROOM_DISPLAY_NAME);
         String closingTime = data.getQueryParameter(CLOSING_TIME);
+        String mqttServerAddress = data.getQueryParameter(MQTT_SERVER_ADDRESS);
+        String mqttPrefix = data.getQueryParameter(MQTT_PREFIX);
 
         PreferenceManager preferences = PreferenceManager.getInstance(this);
 
@@ -68,8 +73,10 @@ public class RemoteConfigActivity extends AppCompatActivity {
             && defaultDurationString == null
             && maxDurationString == null
             && language == null
-            && roomDisplayName ==null
-            && closingTime==null) {
+            && roomDisplayName == null
+            && closingTime == null
+            && mqttServerAddress == null
+            && mqttPrefix == null) {
             Log.d(LOG_TAG, "Parameters not found, opening the wizard");
             final Intent i = new Intent(this, WizardActivity.class);
             startActivity(i);
@@ -109,6 +116,14 @@ public class RemoteConfigActivity extends AppCompatActivity {
 
         if (closingTime != null) {
             setClosingTime(closingTime);
+        }
+
+        if (mqttServerAddress != null) {
+            setMqttServerAddress(mqttServerAddress);
+        }
+
+        if (mqttPrefix != null) {
+            setMqttPrefix(mqttPrefix);
         }
 
             if (accountSet && roomSet) {
@@ -207,6 +222,15 @@ public class RemoteConfigActivity extends AppCompatActivity {
 
     private void setRoomDisplayName(String name) {
         PreferenceManager.getInstance(this).setRoomDisplayName(name);
+    }
+
+    private void setMqttServerAddress(String address) {
+        PreferenceManager.getInstance(this).setMqttServerAddress(address);
+        MqttHelper.getInstance(this, true);
+    }
+
+    private void setMqttPrefix(String prefix) {
+        PreferenceManager.getInstance(this).setMqttPrefix(prefix);
     }
 
     private boolean accountExists(String account) {

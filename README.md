@@ -49,6 +49,11 @@ The config variables are:
 5. default_duration (minutes)
 6. room_display_name
 7. closing_time (do not allow reservations extend beyond this time, HH:mm)
+8. mqtt_server_address the address of the mqtt server to push reservation status updates to
+9. mqtt_prefix the prefix for the mqtt topics for reservations status updates
+
+To enable Mqtt status updates, set variables 8 and 9, and copy an EC private key to
+"/data/data/com.futurice.android.reservator/tablets-private-key.pem"
 
 The errors go to the Android log and can be read by adb logcat.
 

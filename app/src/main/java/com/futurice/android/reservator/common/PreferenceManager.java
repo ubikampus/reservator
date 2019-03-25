@@ -39,6 +39,8 @@ public class PreferenceManager {
     final static String PREFERENCES_ROOM_DISPLAY_NAME = "roomDisplayName";
     final static String PREFERENCES_CLOSING_HOURS = "closingHours";
     final static String PREFERENCES_CLOSING_MINUTES = "closingMinutes";
+    final static String PREFERENCES_MQTT_SERVER_ADDRESS = "mqttServerAddress";
+    final static String PREFERENCES_MQTT_PREFIX = "mqttPrefix";
 
 
     final SharedPreferences preferences;
@@ -120,6 +122,26 @@ public class PreferenceManager {
     public void setRoomDisplayName(String newName) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(PREFERENCES_ROOM_DISPLAY_NAME, newName);
+        editor.apply();
+    }
+
+    public String getMqttServerAddress() {
+        return preferences.getString(PREFERENCES_MQTT_SERVER_ADDRESS, null);
+    }
+
+    public void setMqttServerAddress(String newAddress) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_MQTT_SERVER_ADDRESS, newAddress);
+        editor.apply();
+    }
+
+    public String getMqttPrefix() {
+        return preferences.getString(PREFERENCES_MQTT_PREFIX, null);
+    }
+
+    public void setMqttPrefix(String newPrefix) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_MQTT_PREFIX, newPrefix);
         editor.apply();
     }
 
