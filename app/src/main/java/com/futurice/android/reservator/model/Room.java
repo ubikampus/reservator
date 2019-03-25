@@ -120,9 +120,11 @@ public class Room implements Serializable {
     }
 
     public Reservation getNextReservationToday(DateTime now) {
-        DateTime max = now.add(Calendar.DAY_OF_YEAR, 1).stripTime();
 
-        TimeSpan restOfDay = new TimeSpan(now, max);
+        DateTime start = new DateTime(now.getTimeInMillis()+1);
+        DateTime max = now.add(Calendar.DAY_OF_YEAR, 1).stripTime();
+        
+        TimeSpan restOfDay = new TimeSpan(start, max);
 
         synchronized (this.reservations) {
             Iterator iterator = reservations.iterator();
