@@ -119,19 +119,23 @@ public class Room implements Serializable {
         return null;
     }
 
-    public Reservation getNextReservationToday(DateTime now) {
+    public Reservation getNextReservationToday(DateTime now, String currentId) {
 
         DateTime start = new DateTime(now.getTimeInMillis()+1);
         DateTime max = now.add(Calendar.DAY_OF_YEAR, 1).stripTime();
-        
+
         TimeSpan restOfDay = new TimeSpan(start, max);
 
         synchronized (this.reservations) {
             Iterator iterator = reservations.iterator();
             while (iterator.hasNext()) {
                 Reservation r = (Reservation) iterator.next();
-                if (r.getTimeSpan().intersects(restOfDay))
+                if (r.getTimeSpan().intersects(restOfDay)) {
+                    if (currentId !=null && currentId == r.getId()) {
+                        continue;
+                    }
                     return r;
+                }
             }
         }
         return null;

@@ -107,15 +107,57 @@ public class TrafficLightsPresenter implements
         if (this.state == newState)
             return;
 
-        if (this.state == STATE_RESERVED && newState != STATE_RESERVED) {
+        else if (this.state == STATE_RESERVED && newState != STATE_RESERVED) {
             this.onReservationEnding();
         }
 
-        if (this.state != STATE_RESERVED && newState == STATE_RESERVED) {
+        else if (this.state != STATE_RESERVED && newState == STATE_RESERVED) {
             this.onReservationStarting();
         }
 
+        else
+            this.reportReservationStatus();
+
+
         this.state = newState;
+    }
+
+    private void reportReservationStatus() {
+        String currentId = null;
+        String currentTopic = null;
+        long currentStartTime = -1;
+        long currentEndTime = -1;
+
+        String nextId = null;
+        String nextTopic = null;
+        long nextStartTime = -1;
+        long nextEndTime = -1;
+
+        if (currentReservation != null) {
+            currentId = currentReservation.getId();
+            currentTopic = resources.getString(R.string.status_reserved); //currentReservation.getSubject();
+            currentStartTime = currentReservation.getStartTime().getTimeInMillis();
+            currentEndTime = currentReservation.getEndTime().getTimeInMillis();
+        }
+
+        if (this.room != null) {
+            Reservation nextReservation = null;
+            if (currentReservation != null)
+                nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime(), currentId);
+            else
+                nextReservation = this.room.getNextReservationToday(new DateTime(), null);
+
+            if (nextReservation != null)
+                {
+                    nextId = nextReservation.getId();
+                    nextTopic = resources.getString(R.string.status_reserved); //nextReservation.getSubject();
+                    nextStartTime = nextReservation.getStartTime().getTimeInMillis();
+                    nextEndTime = nextReservation.getEndTime().getTimeInMillis();
+                }
+            }
+
+        MqttHelper.getInstance(this.activity).reportReservationStatus(currentId, currentTopic, currentStartTime, currentEndTime,
+                nextId, nextTopic, nextStartTime, nextEndTime);
     }
 
     private void onReservationStarting() {
@@ -136,7 +178,7 @@ public class TrafficLightsPresenter implements
             currentEndTime = currentReservation.getEndTime().getTimeInMillis();
 
             if (this.room != null) {
-                Reservation nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime());
+                Reservation nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime(), currentId);
                 if (nextReservation != null) {
                     nextId = nextReservation.getId();
                     nextTopic = resources.getString(R.string.status_reserved); //nextReservation.getSubject();
@@ -169,7 +211,7 @@ public class TrafficLightsPresenter implements
             currentEndTime = currentReservation.getEndTime().getTimeInMillis();
 
             if (this.room != null) {
-                Reservation nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime());;
+                Reservation nextReservation = this.room.getNextReservationToday(currentReservation.getEndTime(), currentId);;
                 if (nextReservation != null) {
                     nextId = nextReservation.getId();
                     nextTopic = resources.getString(R.string.status_reserved); //nextReservation.getSubject();
