@@ -70,13 +70,12 @@ public class Room implements Serializable {
 
     public Reservation getCurrentReservation() {
         DateTime now = new DateTime();
-        DateTime bookingThresholdEnd = now.add(Calendar.MINUTE, RESERVED_THRESHOLD_MINUTES);
 
         synchronized (this.reservations) {
             Iterator iterator = reservations.iterator();
             while (iterator.hasNext()) {
                 Reservation r = (Reservation) iterator.next();
-                if (r.getEndTime().after(now) && r.getStartTime().before(bookingThresholdEnd)) {
+                if ( r.getStartTime().before(now) && r.getEndTime().after(now)) {
                     return r;
                 }
             }
@@ -268,24 +267,6 @@ public class Room implements Serializable {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    /**
-     * @param threshold Minimum duration of reservation.
-     * @return If room can be immediately booked with threshold long reservation.
-     */
-    public boolean isBookable(final int threshold) {
-        if (this.isFree()) {
-            if (this.minutesFreeFromNow() < threshold) {
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isBookable() {
-        return isBookable(RESERVED_THRESHOLD_MINUTES);
     }
 
     /**

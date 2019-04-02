@@ -263,6 +263,8 @@ public class PlatformCalendarDataProxy extends DataProxy {
 
         Uri eventUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
 
+        //CalendarContract.Events.DURATION
+
         // Get calendar ID
         String[] mProjection = {CalendarContract.Events.CALENDAR_ID};
         String mSelectionClause = "DELETED=0";

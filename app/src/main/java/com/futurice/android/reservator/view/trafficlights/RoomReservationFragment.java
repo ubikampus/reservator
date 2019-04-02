@@ -84,6 +84,10 @@ public class RoomReservationFragment extends Fragment {
        this.updateTimeLimitsToUi();
     }
 
+    public int getMaxMinutes() {
+        return this.maxMinutes;
+    }
+
     public void setMinutes(int minutes) {
         this.minutes = minutes;
         this.updateMinutesToUi();

@@ -402,7 +402,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-
     private void startUi() {
         this.fragmentManager = getSupportFragmentManager();
         this.trafficLightsPageFragment = new TrafficLightsPageFragment();
@@ -464,8 +463,6 @@ public class MainActivity extends FragmentActivity {
         if ((!PreferenceManager.getInstance(this).getApplicationConfigured())) {
             return false;
         }
-        // Configuration should now be ok, try using it
-        ((ReservatorApplication) getApplication()).resetDataProxy();
 
         // If the configuration did not work, open the configuration wizard again
         if (((ReservatorApplication)getApplication()).getDataProxy().hasFatalError() ) {
@@ -486,7 +483,9 @@ public class MainActivity extends FragmentActivity {
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         //Re-check if configuration is now correct
-        if (isConfigurationOk()) {
+        // Configuration should now be ok, try using it
+        ((ReservatorApplication) getApplication()).resetDataProxy();
+        if (isConfigurationOk() ) {
             Intent intent = getIntent();
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
             finish();

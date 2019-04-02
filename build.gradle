@@ -26,8 +26,8 @@ ext {
 
     // Libraries Dependencies
     appintroVersion = '4.1.0'
-    supportLibraryVersion = '27.0.1'
-    appCompatVesion = '27.0.1'
+    supportLibraryVersion = '27.1.1'
+    appCompatVesion = '27.1.1'
     butterknifeVersion = '8.8.1'
 
 }

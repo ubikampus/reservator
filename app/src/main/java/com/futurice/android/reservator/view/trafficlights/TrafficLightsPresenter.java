@@ -459,37 +459,6 @@ public class TrafficLightsPresenter implements
     }
 
 
-    //Methods for updating the view according to model's Room object
-
-    /*
-    private void updateConnected() {
-        ConnectivityManager cm = null;
-        try {
-            cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        } catch (ClassCastException cce) {
-            return;
-        }
-        if (cm == null) return;
-
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-
-        if (ni != null && ni.isConnectedOrConnecting()) {
-            // Connected
-            lastTimeConnected = new Date();
-            if (disconnected.getVisibility() != GONE) {
-                disconnected.setVisibility(GONE);
-            }
-        } else {
-            // Disconnected
-            if (lastTimeConnected.before(new Date(new Date().getTime() - DISCONNECTED_WARNING_ICON_THRESHOLD))) {
-                if (disconnected.getVisibility() != VISIBLE) {
-                    disconnected.setVisibility(VISIBLE);
-                }
-            }
-        }
-    }
-    */
-
     private int getMinutesUntilClosingTime() {
         int closingHours = PreferenceManager.getInstance(activity).getClosingHours();       //closingTime is in minutes since midnight
         int closingMinutes = PreferenceManager.getInstance(activity).getClosingMinutes();       //closingTime is in minutes since midnight
@@ -650,7 +619,19 @@ public class TrafficLightsPresenter implements
         if (minutesUntilClosingTime != Integer.MAX_VALUE && minutesUntilClosingTime < tempMinutes )
             tempMinutes = minutesUntilClosingTime;
 
+        int oldMaxMinutes = roomReservationFragment.getMaxMinutes();
+
         this.roomReservationFragment.setMaxMinutes(tempMinutes);
+
+        // If the maximum minutes is being increased, the closing time has passed
+        // and the seekbar can be set to defaultDurationMinutes
+
+        if (oldMaxMinutes < tempMinutes && !tentativeChangeInProgess) {
+            int defaultDuration = PreferenceManager.getInstance(activity).getDefaultDurationMinutes();
+
+            int defaultDur  = defaultDuration > tempMinutes ? tempMinutes : defaultDuration;
+            this.roomReservationFragment.setMinutes(defaultDur);
+        }
 
         int minutes = this.roomReservationFragment.getCurrentMinutes();
         this.dayCalendarFragment.setTentativeTimeSpan(new TimeSpan(new DateTime(), new DateTime(System.currentTimeMillis() + (minutes * 60 * 1000))));
@@ -689,7 +670,19 @@ public class TrafficLightsPresenter implements
         if (minutesUntilClosingTime != Integer.MAX_VALUE && minutesUntilClosingTime < tempMinutes )
             tempMinutes = minutesUntilClosingTime;
 
+        int oldMaxMinutes = roomReservationFragment.getMaxMinutes();
+
         this.roomReservationFragment.setMaxMinutes(tempMinutes);
+
+        // If the maximum minutes is being increased, the closing time has passed
+        // and the seekbar can be set to defaultDurationMinutes
+
+        if (oldMaxMinutes < tempMinutes && !this.tentativeChangeInProgess) {
+            int defaultDuration = PreferenceManager.getInstance(activity).getDefaultDurationMinutes();
+
+            int defaultDur  = defaultDuration > tempMinutes ? tempMinutes : defaultDuration;
+            this.roomReservationFragment.setMinutes(defaultDur);
+        }
 
         int minutes = this.roomReservationFragment.getCurrentMinutes();
         this.dayCalendarFragment.setTentativeTimeSpan(new TimeSpan(new DateTime(), new DateTime(System.currentTimeMillis() + (minutes * 60 * 1000))));
@@ -717,7 +710,8 @@ public class TrafficLightsPresenter implements
         else {
             this.roomStatusFragment.setRoomTitleText(room.getName());
         }
-        if (room.isBookable(QUICK_BOOK_THRESHOLD)) {
+        Reservation tempCurrentReservation = room.getCurrentReservation();
+        if ( tempCurrentReservation == null) {
             this.setState(STATE_FREE);
             if (room.isFreeRestOfDay()) {
                 this.showFreeForRestOfTheDay();
@@ -731,7 +725,7 @@ public class TrafficLightsPresenter implements
                 }
             }
         } else {
-            this.currentReservation = this.room.getCurrentReservation();
+            this.currentReservation = tempCurrentReservation;
             this.setState(STATE_RESERVED);
             this.showReserved();
         }
@@ -750,59 +744,4 @@ public class TrafficLightsPresenter implements
         this.connected = false;
         runThreadSafeUpdateRoomData();
     }
-
-
-    /*
-    public void updateRoomData(Room room) {
-        //updateConnected();
-        this.room = room;
-
-        this.dayCalendarFragment.updateRoomData(room);
-        this.roomStatusFragment.setRoomTitleText(room.getName());
-
-
-        if (room.isBookable(QUICK_BOOK_THRESHOLD)) {
-            this.roomStatusFragment.setStatusText(resources.getString(R.string.status_free));
-            this.roomStatusFragment.setMeetingNameText("");
-
-            if (room.isFreeRestOfDay()) {
-                this.showFreeForRestOfTheDay();
-                //this.roomStatusFragment.setStatusUntilText(resources.getString(R.string.free_for_the_day));
-                //this.trafficLightsPageFragment.getView().setBackgroundColor(resources.getColor(R.color.TrafficLightFree));
-                //this.trafficLightsPageFragment.showRoomReservationFragment();
-                //this.roomStatusFragment.showBookNowText();
-            } else {
-                int freeMinutes = room.minutesFreeFromNow();
-                //this.roomStatusFragment.setStatusText(resources.getString(R.string.status_free));
-                //this.roomStatusFragment.setStatusUntilText(resources.getString(R.string.free_for_specific_amount, Helpers.humanizeTimeSpan2(freeMinutes)));
-
-                if (freeMinutes >= Room.RESERVED_THRESHOLD_MINUTES) {
-                    this.showFreeForMinutes(freeMinutes);
-                    //this.trafficLightsPageFragment.getView().setBackgroundColor(resources.getColor(R.color.TrafficLightFree));
-                    //this.trafficLightsPageFragment.showRoomReservationFragment();
-                    //this.roomStatusFragment.showBookNowText();
-
-                } else {
-                    this.showReservationPending(freeMinutes);
-                    //this.trafficLightsPageFragment.getView().setBackgroundColor(resources.getColor(R.color.TrafficLightYellow));
-                    //this.trafficLightsPageFragment.showOngoingReservationFragment();
-                    //this.updateOngoingReservationFragment();
-                    //this.roomStatusFragment.hideBookNowText();
-                }
-            }
-
-            //this.trafficLightsPageFragment.showRoomReservationFragment();
-
-        } else {
-            this.showReserved();
-
-            //this.trafficLightsPageFragment.getView().setBackgroundColor(resources.getColor(R.color.TrafficLightReserved));
-            //this.roomStatusFragment.setStatusText(resources.getString(R.string.status_reserved));
-            //this.trafficLightsPageFragment.showOngoingReservationFragment();
-            //this.updateOngoingReservationFragment();
-
-            //this.roomStatusFragment.hideBookNowText();
-            //this.showReservationDetails(room.getCurrentReservation(), room.getNextFreeSlot());
-        }
-    }*/
 }
