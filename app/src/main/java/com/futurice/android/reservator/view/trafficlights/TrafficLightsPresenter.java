@@ -511,6 +511,7 @@ public class TrafficLightsPresenter implements
         if (currentReservation == null)
             return;
 
+
         long endTime = currentReservation.getEndTime().getTimeInMillis();
         int remainingMinutes = (int) Math.round((endTime - System.currentTimeMillis()) / 60000f);
         int tempMax = PreferenceManager.getInstance(activity).getMaxDurationMinutes();
@@ -540,9 +541,16 @@ public class TrafficLightsPresenter implements
 
 
         if (this.ongoingReservationFragment != null) {
+            if (currentReservation.getDuration() != null)
+                this.ongoingReservationFragment.setNotModifiable();
+
+            else
+                this.ongoingReservationFragment.setModifiable();
+
             this.ongoingReservationFragment.setMaxMinutes(tempMax);
             if (!this.reservationChangeInProgess)
                 this.ongoingReservationFragment.setRemainingMinutes(remainingMinutes);
+
         }
 
         if (remainingMinutes <= 0) {

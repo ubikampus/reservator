@@ -53,6 +53,7 @@
     <string name="free_for_specific_amount">nästa reservering</string>
     <string name="status_reserved">RESERVERAT</string>
     <string name="free_at">Ledigt från</string>
+    <string name="non_modifiable">Kan ej förändras</string>
     <string name="meeting_description">Ange beskrivning</string>
     <string name="quick_booking">Snabbreservering:</string>
     <string name="reservation_remaining">RESERVERING KVAR:</string>

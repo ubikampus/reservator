@@ -38,6 +38,7 @@ public class OngoingReservationFragment extends Fragment {
     private Button cancelChangeButton;
     private Button cancelReservationButton;
     private TextView modifyPrompt;
+    private TextView notModifiableText;
 
     private CountDownTimer changeTimer;
 
@@ -149,6 +150,28 @@ public class OngoingReservationFragment extends Fragment {
         this.modifyPrompt.setVisibility(View.VISIBLE);
     }
 
+
+    public void setNotModifiable() {
+        if (this.changeProgressBar == null ||  this.modifyPrompt== null
+            || this.cancelReservationButton == null || this.notModifiableText == null)
+            return;
+
+        this.changeProgressBar.setVisibility(View.INVISIBLE);
+        this.modifyPrompt.setVisibility(View.INVISIBLE);
+        this.cancelReservationButton.setVisibility(View.INVISIBLE);
+        this.notModifiableText.setVisibility(View.VISIBLE);
+    }
+
+    public void setModifiable() {
+        if (this.modifyPrompt== null
+                || this.cancelReservationButton == null || this.notModifiableText == null)
+            return;
+
+        this.modifyPrompt.setVisibility(View.VISIBLE);
+        this.cancelReservationButton.setVisibility(View.VISIBLE);
+        this.notModifiableText.setVisibility(View.INVISIBLE);
+    }
+
     public void setPresenter(OngoingReservationPresenter presenter) {
         this.presenter = presenter;
         this.presenter.setOngoingReservationFragment(this);
@@ -206,7 +229,7 @@ public class OngoingReservationFragment extends Fragment {
         this.barDurationText = (TextView) view.findViewById(R.id.barDurationText);
         this.seekBar = (SeekBar) view.findViewById(R.id.ongoingSeekBar);
         this.modifyPrompt = (TextView) view.findViewById(R.id.modifyPrompt);
-
+        this.notModifiableText = (TextView) view.findViewById(R.id.notModifiableText);
         this.changeProgressBar = (ProgressBar) view.findViewById(R.id.cangeProgressBar);
 
         this.cancelChangeButton = (Button) view.findViewById(R.id.cancelChangeButton);

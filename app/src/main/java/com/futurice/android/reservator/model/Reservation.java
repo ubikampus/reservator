@@ -9,11 +9,16 @@ public class Reservation implements Comparable<Reservation>, Serializable {
     private TimeSpan timeSpan;
     final private String subject;
     private boolean cancellable = true;
+    private String duration = null;
 
-    public Reservation(String id, String subject, TimeSpan timeSpan) {
+    public Reservation(String id, String subject, TimeSpan timeSpan, String duration) {
         this.id = id;
         this.subject = subject;
         this.timeSpan = timeSpan;
+        if (duration == null || duration == "")
+            this.duration = null;
+        else
+            this.duration = duration;
     }
 
     public String getSubject() {
@@ -35,6 +40,8 @@ public class Reservation implements Comparable<Reservation>, Serializable {
     public String getId() {
         return id;
     }
+
+    public String getDuration() { return duration; }
 
     public void setTimeSpan(TimeSpan timeSpan) {
         this.timeSpan = timeSpan;

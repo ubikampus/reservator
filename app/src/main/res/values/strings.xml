@@ -58,6 +58,7 @@
     <string name="free_for_specific_amount">next reservation</string>
     <string name="status_reserved">RESERVED</string>
     <string name="free_at">Free at</string>
+    <string name="non_modifiable">Not modifiable</string>
     <string name="meeting_description">Enter description</string>
     <string name="quick_booking">Use now:</string>
     <string name="reservation_remaining">RESERVATION REMAINING:</string>

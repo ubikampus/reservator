@@ -151,7 +151,7 @@ public class PlatformCalendarDataProxy extends DataProxy {
         Reservation createdReservation = new Reservation(
             Long.toString(eventId) + "-" + Long.toString(timeSpan.getStart().getTimeInMillis()),
             owner,
-            timeSpan);
+            timeSpan, null);
         createdReservation.setIsCancellable(true);
         putToLocalCache(room, createdReservation);
     }
@@ -260,6 +260,9 @@ public class PlatformCalendarDataProxy extends DataProxy {
     @Override
     public void modifyReservationTimeSpan(Reservation reservation, Room room, TimeSpan timeSpan) throws ReservatorException {
         long eventId = getEventIdFromReservation(reservation);
+
+        if (reservation.getDuration() != null)
+            return;
 
         Uri eventUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
 
@@ -502,7 +505,8 @@ public class PlatformCalendarDataProxy extends DataProxy {
             CalendarContract.Instances.TITLE,
             CalendarContract.Instances.BEGIN,
             CalendarContract.Instances.END,
-            CalendarContract.Instances.ORGANIZER
+            CalendarContract.Instances.ORGANIZER,
+                CalendarContract.Instances.DURATION
         };
         String mSelectionClause =
             CalendarContract.Instances.CALENDAR_ID + " = " + room.getId();// + " AND " +
@@ -546,12 +550,13 @@ public class PlatformCalendarDataProxy extends DataProxy {
                     long start = result.getLong(2);
                     long end = Math.max(start, result.getLong(3));
                     String eventOrganizerAccount = result.getString(4);
+                    String duration = result.getString(5);
                   //  Log.d("ReservationDetails", "id=" + eventId + ", title=" + title + ", organizer=" + eventOrganizerAccount);
 
                     Reservation res = new Reservation(
                         Long.toString(eventId) + "-" + Long.toString(start),
                         makeEventTitle(room.getName(), eventId, title, eventOrganizerAccount, DEFAULT_MEETING_NAME),
-                        new TimeSpan(new DateTime(start), new DateTime(end)));
+                        new TimeSpan(new DateTime(start), new DateTime(end)), duration);
                     if (eventOrganizerAccount != null && calendarAccount.equals(eventOrganizerAccount.toLowerCase(Locale.getDefault()))) {
                         res.setIsCancellable(true);
                     }

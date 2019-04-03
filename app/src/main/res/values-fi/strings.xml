@@ -56,6 +56,7 @@
     <string name="free_for_specific_amount">seuraava varaus</string>
     <string name="status_reserved">VARATTU</string>
     <string name="free_at">Vapautuu</string>
+    <string name="non_modifiable">Ei muokattavissa</string>
     <string name="meeting_description">Syötä kuvaus</string>
     <string name="quick_booking">Pikavaraus:</string>
     <string name="reservation_remaining">VARAUSTA JÄLJELLÄ:</string>
