@@ -45,6 +45,7 @@ public class TrafficLightsPresenter implements
 
     private int state = -1;
 
+    private String previousReservationId = null;
     private boolean connected = true;
     private boolean reservationChangeInProgess= false;
     private boolean tentativeChangeInProgess= false;
@@ -107,17 +108,22 @@ public class TrafficLightsPresenter implements
         if (this.state == newState)
             return;
 
-        else if (this.state == STATE_RESERVED && newState != STATE_RESERVED) {
+        else if (this.state == STATE_RESERVED && (newState != STATE_RESERVED
+                || (newState == STATE_RESERVED && this.currentReservation != null && this.currentReservation.getId() != previousReservationId) )) {
             this.onReservationEnding();
         }
 
-        else if (this.state != STATE_RESERVED && newState == STATE_RESERVED) {
+        else if ((this.state != STATE_RESERVED && newState == STATE_RESERVED)
+                || (newState == STATE_RESERVED && this.currentReservation != null && this.currentReservation.getId() != previousReservationId) ) {
             this.onReservationStarting();
         }
 
         else
             this.reportReservationStatus();
 
+
+        if (newState == STATE_RESERVED && this.currentReservation != null)
+            this.previousReservationId = this.currentReservation.getId();
 
         this.state = newState;
     }
