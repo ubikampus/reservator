@@ -49,6 +49,8 @@ public class OngoingReservationFragment extends Fragment {
     private int savedProgress = 0;
     private int progress = 0;
 
+    private boolean modifiable = true;
+
     private boolean isCountingDown = false;
 
 
@@ -151,25 +153,47 @@ public class OngoingReservationFragment extends Fragment {
     }
 
 
-    public void setNotModifiable() {
+    private void showNotModifiable() {
         if (this.changeProgressBar == null ||  this.modifyPrompt== null
-            || this.cancelReservationButton == null || this.notModifiableText == null)
+                || this.cancelReservationButton == null || this.notModifiableText == null
+                || this.seekBar == null)
             return;
 
         this.changeProgressBar.setVisibility(View.INVISIBLE);
         this.modifyPrompt.setVisibility(View.INVISIBLE);
         this.cancelReservationButton.setVisibility(View.INVISIBLE);
         this.notModifiableText.setVisibility(View.VISIBLE);
+        this.seekBar.setEnabled(false);
     }
 
-    public void setModifiable() {
+    private void showModifiable() {
         if (this.modifyPrompt== null
-                || this.cancelReservationButton == null || this.notModifiableText == null)
+                || this.cancelReservationButton == null || this.notModifiableText == null
+                || this.seekBar == null)
             return;
 
         this.modifyPrompt.setVisibility(View.VISIBLE);
         this.cancelReservationButton.setVisibility(View.VISIBLE);
+        this.seekBar.setEnabled(true);
         this.notModifiableText.setVisibility(View.INVISIBLE);
+    }
+
+
+    public void setNotModifiable() {
+        this.modifiable = false;
+        this.showNotModifiable();
+    }
+
+    public void setModifiable() {
+       this.modifiable = true;
+       this.showModifiable();
+    }
+
+    private void updateModifiableStatusToUi() {
+        if (this.modifiable)
+            this.showModifiable();
+        else
+            this.showNotModifiable();
     }
 
     public void setPresenter(OngoingReservationPresenter presenter) {
@@ -265,5 +289,6 @@ public class OngoingReservationFragment extends Fragment {
         super.onResume();
         this.updateRemainingMinutesToUi();
         this.updateMaxMinutesToUi();
+        this.updateModifiableStatusToUi();
     }
 }
