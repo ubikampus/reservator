@@ -3,6 +3,11 @@ UbiKampus Reservator
 
 <img src="images/FreeEmpty.png" width="600">
 
+How to get it
+--------------
+
+Not available in Google Play yet. Download and install the latest .apk from the releases page: https://github.com/ubikampus/reservator/releases
+
 Description
 -----------
 UbiKampus Reservator is an Android application for displaying and reserving meeting rooms, developed by Futurice and the University of Helsinki. 
