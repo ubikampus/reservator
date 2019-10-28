@@ -85,6 +85,7 @@ public class RemoteConfigActivity extends AppCompatActivity {
             if (accountExists(account)) {
 
                 preferences.setDefaultCalendarAccount(account);
+                preferences.setDefaultUserName(account);
                 accountSet = true;
                 Log.d(LOG_TAG, "Account configured: " + preferences.getDefaultCalendarAccount());
             } else {
