@@ -47,6 +47,7 @@
     <string name="cancel_reservation">End the reservation</string>
     <string name="hint_your_name">Your name</string>
     <string name="button_reserve">Reserve</string>
+    <string name="air_quality_warning_prompt">Ventilate the room!</string>
     <string name="message_permissions_are_required">Reservator Needs Permissions to Work!</string>
     <string name="room_capacity">for %1$d</string>
     <string name="end_plus_content_description">plus time</string>

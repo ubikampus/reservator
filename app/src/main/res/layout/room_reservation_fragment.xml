@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
@@ -19,37 +19,21 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <!--
-            <TextView
-                android:id="@+id/TextViewBarBegin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="120dp"
-                android:text="12:00"
-                android:textColor="#F8F8F8"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/seekBar"
-                app:layout_constraintStart_toStartOf="parent" />
--->
-    <SeekBar
-        android:id="@+id/seekBar"
+    <TextView
+        android:id="@+id/bookNowText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="188dp"
-        android:max="90"
-        android:progress="30"
-        android:thumbOffset="-0dp"
-        android:progressDrawable="@drawable/seekbar_free"
-        android:thumb="@drawable/seekthumb_free"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </SeekBar>
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimary70Alpha"
+        android:text="@string/quick_booking"
+        android:textAlignment="center"
+        android:textIsSelectable="false"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/TextViewBarDuration" />
+
 
     <TextView
         android:id="@+id/TextViewBarDuration"
@@ -59,29 +43,32 @@
         android:textAlignment="center"
         android:textColor="#F8F8F8"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></TextView>
 
-    <Button
-        android:id="@+id/reserveButton"
-        android:layout_width="391dp"
-        android:layout_height="72dp"
-        android:layout_alignTop="@+id/nameInput"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:layout_toEndOf="@+id/nameInput"
-        android:background="@drawable/reserve_button"
-        android:text="@string/button_reserve"
-        android:textColor="@color/TrafficLightFree"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameInput"
-        app:layout_constraintVertical_bias="1.0"></Button>
+        app:layout_constraintBottom_toTopOf="@+id/seekBar"
+        ></TextView>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:max="90"
+        android:progress="30"
+        android:thumbOffset="-0dp"
+        android:progressDrawable="@drawable/seekbar_free"
+        android:thumb="@drawable/seekthumb_free"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/nameInput"
+        >
+    </SeekBar>
+
 
     <EditText
         android:id="@+id/nameInput"
@@ -90,9 +77,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="18dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/reserve_text_box"
         android:ems="10"
         android:paddingLeft="10dp"
@@ -103,10 +89,33 @@
         android:singleLine="true"
         android:textColor="@color/pureWhite"
         android:textAlignment="gravity"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar"></EditText>
+        app:layout_constraintBottom_toTopOf="@+id/reserveButton"
+        ></EditText>
+
+    <Button
+        android:id="@+id/reserveButton"
+        android:layout_width="391dp"
+        android:layout_height="72dp"
+        android:layout_alignTop="@+id/nameInput"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
+        android:layout_toEndOf="@+id/nameInput"
+        android:background="@drawable/reserve_button"
+        android:text="@string/button_reserve"
+        android:textColor="@color/TrafficLightFree"
+        android:textSize="25dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintVertical_bias="1.0"></Button>
+
 
 </android.support.constraint.ConstraintLayout>
 

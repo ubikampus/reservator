@@ -5,8 +5,10 @@ import android.content.ContextWrapper;
 import android.util.Log;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import fi.helsinki.ubimqtt.IUbiActionListener;
+import fi.helsinki.ubimqtt.IUbiMessageListener;
 import fi.helsinki.ubimqtt.UbiMqtt;
 
 public class MqttHelper {
@@ -38,11 +41,18 @@ public class MqttHelper {
 
     private Context context;
     private String privateKey = null;
-
+    private String airQualityPublicKey = null;
     private UbiMqtt ubiMqtt = null;
 
     private MqttHelper(Context context) {
         this.context = context;
+    }
+
+
+    private AirQualityListener airQualityListener = null;
+
+    public void setAirQualityListener(AirQualityListener lis) {
+        this.airQualityListener = lis;
     }
 
     private static String readStringFromFile(Context context, String filePath) {
@@ -92,13 +102,72 @@ public class MqttHelper {
         return ret;
     }
 
+    private void subscribeToAirQuality() {
+
+        String mqttAirQualityTopic = PreferenceManager.getInstance(context).getMqttAirQualityTopic();
+
+        Log.d("reservator", "mqttAirQualityTopic " + mqttAirQualityTopic);
+        if (mqttAirQualityTopic == null)
+            return;
+
+        /* It seems that the java version of ubimqtt is not able to check the signatures made with javascript version
+        this.airQualityPublicKey = readStringFromFile(context, "/sdcard/thunderboard-public-key.pem");
+
+        if (this.airQualityPublicKey != null) {
+            String[] keys = new String[1];
+            keys[0] = this.airQualityPublicKey;
+        */
+            ubiMqtt.subscribe(mqttAirQualityTopic, new IUbiMessageListener() {
+                @Override
+                public void messageArrived(String topic, MqttMessage mqttMessage, String listenerId) throws Exception {
+                    Log.d("reservator", "messageArrived() " + mqttMessage.toString());
+                    try {
+                        JSONParser parser = new JSONParser();
+                        JSONObject obj = (JSONObject) parser.parse(mqttMessage.toString());
+
+                        String payload = (String) obj.get("payload");
+
+
+                        JSONObject payloadObj = (JSONObject) parser.parse(payload);
+
+                        JSONObject readings = (JSONObject) payloadObj.get("readings");
+
+
+                        Long co2 = (Long) readings.get("co2");
+                        Long voc = (Long) readings.get("voc");
+
+                        if (airQualityListener != null) {
+                            airQualityListener.onAirQualityReading(co2.intValue(), voc.intValue());
+                        }
+                    } catch (Exception e) {
+                        Log.d("reservator", "JSON parse error " + e.toString());
+                    }
+                }
+            }, new IUbiActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                }
+            });
+        /*
+        }
+        else {
+            Log.d("reservator", "airQualityPublicKey was null");
+        }
+
+         */
+    }
+
     private void connect(final IUbiActionListener listener) {
         if (ubiMqtt != null) {
             listener.onSuccess(null);
             return;
         }
         String serverAddress = PreferenceManager.getInstance(context).getMqttServerAddress();
-        Log.d("MqttHelper", "serverAddress: "+ serverAddress);
+        Log.d("MqttHelper", "serverAddress: " + serverAddress);
         if (serverAddress != null) {
             privateKey = readStringFromFile(context, "/sdcard/tablets-private-key.pem");
             if (privateKey != null) {
@@ -109,6 +178,9 @@ public class MqttHelper {
                     public void onSuccess(IMqttToken asyncActionToken) {
                         Log.d("MqttHelper", "Connecting to mqtt server succeeded");
                         ubiMqtt = tempUbiMqtt;
+
+                        subscribeToAirQuality();
+
                         listener.onSuccess(asyncActionToken);
                     }
 
@@ -121,6 +193,7 @@ public class MqttHelper {
             }
         }
     }
+
     public void disconnect() {
         if (ubiMqtt != null) {
             ubiMqtt.disconnect(new IUbiActionListener() {
@@ -137,6 +210,7 @@ public class MqttHelper {
         }
         ubiMqtt = null;
     }
+
     public void reportReservationStarting(final String currentId, final String currentTopic, final long currentStartTime, final long currentEndTime,
                                           final String nextId, final String nextTopic, final long nextStartTime, final long nextEndTime) {
         this.connect(new IUbiActionListener() {
@@ -166,6 +240,7 @@ public class MqttHelper {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                 Log.d("MqttHelper", "MqttHelper::reportReservationStarting() Connecting to Mqtt failed");
@@ -175,38 +250,39 @@ public class MqttHelper {
 
     public void reportReservationEnding(final String currentId, final String currentTopic, final long currentStartTime, final long currentEndTime,
                                         final String nextId, final String nextTopic, final long nextStartTime, final long nextEndTime) {
-            this.connect(new IUbiActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    try {
-                        String topic = PreferenceManager.getInstance(context).getMqttPrefix() + "/ending";
+        this.connect(new IUbiActionListener() {
+            @Override
+            public void onSuccess(IMqttToken asyncActionToken) {
+                try {
+                    String topic = PreferenceManager.getInstance(context).getMqttPrefix() + "/ending";
 
-                        JSONObject statusObject = createStatusObject(currentId, currentTopic, currentStartTime, currentEndTime,
-                                nextId, nextTopic, nextStartTime, nextEndTime);
+                    JSONObject statusObject = createStatusObject(currentId, currentTopic, currentStartTime, currentEndTime,
+                            nextId, nextTopic, nextStartTime, nextEndTime);
 
-                        String message = statusObject.toString();
+                    String message = statusObject.toString();
 
-                        ubiMqtt.publishSigned(topic, message, privateKey, new IUbiActionListener() {
-                            @Override
-                            public void onSuccess(IMqttToken asyncActionToken) {
-                                Log.d("MqttHelper", "MqttHelper::reportReservationEnding() Mqtt publish succeeded");
-                            }
+                    ubiMqtt.publishSigned(topic, message, privateKey, new IUbiActionListener() {
+                        @Override
+                        public void onSuccess(IMqttToken asyncActionToken) {
+                            Log.d("MqttHelper", "MqttHelper::reportReservationEnding() Mqtt publish succeeded");
+                        }
 
-                            @Override
-                            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                                Log.d("MqttHelper", "MqttHelper::reportReservationEnding() Mqtt publish failed");
-                                exception.printStackTrace();
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                            Log.d("MqttHelper", "MqttHelper::reportReservationEnding() Mqtt publish failed");
+                            exception.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.d("MqttHelper", "MqttHelper::reportReservationEnding() Connecting to Mqtt failed");
-                }
-            });
+            }
+
+            @Override
+            public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                Log.d("MqttHelper", "MqttHelper::reportReservationEnding() Connecting to Mqtt failed");
+            }
+        });
     }
 
     public void reportReservationStatus(final String currentId, final String currentTopic, final long currentStartTime, final long currentEndTime,
@@ -238,6 +314,7 @@ public class MqttHelper {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                 Log.d("MqttHelper", "MqttHelper::reportReservationStatus() Connecting to Mqtt failed");

@@ -142,7 +142,7 @@ public class OngoingReservationFragment extends Fragment {
         this.changeProgressBar.setVisibility(View.VISIBLE);
         this.cancelChangeButton.setVisibility(View.VISIBLE);
         this.cancelReservationButton.setVisibility(View.GONE);
-        this.modifyPrompt.setVisibility(View.GONE);
+        this.modifyPrompt.setVisibility(View.INVISIBLE);
     }
 
     public void hideCancelWidgets() {

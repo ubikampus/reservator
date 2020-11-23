@@ -25,6 +25,8 @@ public class RemoteConfigActivity extends AppCompatActivity {
     public static final String CLOSING_TIME = "closing_time";
     public static final String MQTT_SERVER_ADDRESS = "mqtt_server_address";
     public static final String MQTT_PREFIX = "mqtt_prefix";
+    public static final String MQTT_AIR_QUALITY_TOPIC = "mqtt_air_quality_topic";
+    public static final String MQTT_CO2_TRESHOLD = "mqtt_co2_treshold";
 
     public static final String LOG_TAG = "RemoteConfigActivity";
 
@@ -63,6 +65,8 @@ public class RemoteConfigActivity extends AppCompatActivity {
         String closingTime = data.getQueryParameter(CLOSING_TIME);
         String mqttServerAddress = data.getQueryParameter(MQTT_SERVER_ADDRESS);
         String mqttPrefix = data.getQueryParameter(MQTT_PREFIX);
+        String mqttAirQualityTopic = data.getQueryParameter(MQTT_AIR_QUALITY_TOPIC);
+        String mqttCo2Treshold = data.getQueryParameter(MQTT_CO2_TRESHOLD);
 
         PreferenceManager preferences = PreferenceManager.getInstance(this);
 
@@ -76,7 +80,9 @@ public class RemoteConfigActivity extends AppCompatActivity {
             && roomDisplayName == null
             && closingTime == null
             && mqttServerAddress == null
-            && mqttPrefix == null) {
+            && mqttPrefix == null
+            && mqttAirQualityTopic == null
+            && mqttCo2Treshold == null) {
             Log.d(LOG_TAG, "Parameters not found, opening the wizard");
             final Intent i = new Intent(this, WizardActivity.class);
             startActivity(i);
@@ -125,6 +131,14 @@ public class RemoteConfigActivity extends AppCompatActivity {
 
         if (mqttPrefix != null) {
             setMqttPrefix(mqttPrefix);
+        }
+
+        if (mqttAirQualityTopic != null) {
+            setMqttAirQualityTopic(mqttAirQualityTopic);
+        }
+
+        if (mqttCo2Treshold != null) {
+            setMqttCo2Treshold(mqttCo2Treshold);
         }
 
             if (accountSet && roomSet) {
@@ -232,6 +246,22 @@ public class RemoteConfigActivity extends AppCompatActivity {
 
     private void setMqttPrefix(String prefix) {
         PreferenceManager.getInstance(this).setMqttPrefix(prefix);
+    }
+
+    private void setMqttAirQualityTopic(String topic) {
+        PreferenceManager.getInstance(this).setMqttAirQualityTopic(topic);
+    }
+
+    private void setMqttCo2Treshold(String tresholdString) {
+        try {
+            int treshold = Integer.parseInt(tresholdString);
+
+            PreferenceManager.getInstance(this).setMqttCo2Treshold(treshold);
+
+        } catch (NumberFormatException e) {
+            Log.d(LOG_TAG,
+                    "Could not set co2 treshold, " + tresholdString + " is not a " + "number");
+        }
     }
 
     private boolean accountExists(String account) {

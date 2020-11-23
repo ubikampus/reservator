@@ -2,12 +2,14 @@ package com.futurice.android.reservator.view.trafficlights;
 
 import android.app.Activity;
 import android.content.res.Resources;
+import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.os.Handler;
 
 import com.futurice.android.reservator.R;
+import com.futurice.android.reservator.common.AirQualityListener;
 import com.futurice.android.reservator.common.Helpers;
 import com.futurice.android.reservator.common.LedHelper;
 import com.futurice.android.reservator.common.MqttHelper;
@@ -34,7 +36,8 @@ public class TrafficLightsPresenter implements
         BottomFragment.BottomFragmentPresenter,
         com.futurice.android.reservator.common.Presenter,
         com.futurice.android.reservator.model.DataUpdatedListener,
-        com.futurice.android.reservator.model.AddressBookUpdatedListener {
+        com.futurice.android.reservator.model.AddressBookUpdatedListener,
+                        AirQualityListener {
 
     private static final int STATE_FREE = 1;
     private static final int STATE_RESERVED = 2;
@@ -57,6 +60,9 @@ public class TrafficLightsPresenter implements
     private DayCalendarFragment dayCalendarFragment;
     private DisconnectedFragment disconnectedFragment;
     private BottomFragment bottomFragment;
+
+    private int co2Treshold = -1;
+    private long lastAirQualityReadingTimeStamp = System.currentTimeMillis();
 
     private Activity activity;
     private Model model;
@@ -97,6 +103,17 @@ public class TrafficLightsPresenter implements
     }
 
     public void onMinuteElapsed() {
+        if (this.roomStatusFragment != null) {
+            if (lastAirQualityReadingTimeStamp < (System.currentTimeMillis()- (5*60000) )) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        roomStatusFragment.hideAirQualityWarning();
+                        roomStatusFragment.hideCo2Text();
+                    }
+                });
+            }
+        }
         this.refreshModel();
         this.updateOngoingReservationFragment();
     }
@@ -258,6 +275,9 @@ public class TrafficLightsPresenter implements
         if (trafficLightsPageFragment != null && roomStatusFragment != null &&
                 ongoingReservationFragment != null && roomReservationFragment != null && dayCalendarFragment != null &&
                 disconnectedFragment != null && this.bottomFragment != null){
+
+            this.co2Treshold = PreferenceManager.getInstance(this.activity).getMqttCo2Treshold();
+            MqttHelper.getInstance(this.activity).setAirQualityListener(this);
             this.model.getDataProxy().refreshRoomReservations(this.model.getFavoriteRoom());
             handler.postDelayed(minuteRunnable, 60000);
         }
@@ -296,7 +316,7 @@ public class TrafficLightsPresenter implements
     }
 
     private void showInfoWindow() {
-        this.trafficLightsPageFragment.showInfoWindow();
+        this.trafficLightsPageFragment.showInfoWindow(this.activity);
     }
 
     // ------ Implementation of RoomReservationFragment.RoomReservationPresenter
@@ -590,7 +610,7 @@ public class TrafficLightsPresenter implements
         else
             this.trafficLightsPageFragment.showDisconnectedFragment();
 
-        this.roomStatusFragment.hideBookNowText();
+        //this.roomStatusFragment.hideBookNowText();
         this.showReservationDetails(this.currentReservation, room.getNextFreeSlot());
 
         this.roomReservationFragment.clearDescription();
@@ -611,7 +631,7 @@ public class TrafficLightsPresenter implements
 
         //this.trafficLightsPageFragment.showOngoingReservationFragment();
         //this.updateOngoingReservationFragment();
-        this.roomStatusFragment.hideBookNowText();
+        //this.roomStatusFragment.hideBookNowText();
 
         if (this.connected)
             this.trafficLightsPageFragment.hideBothReservationFragments();
@@ -654,11 +674,11 @@ public class TrafficLightsPresenter implements
 
         if (this.connected) {
             this.trafficLightsPageFragment.showRoomReservationFragment();
-            this.roomStatusFragment.showBookNowText();
+            //this.roomStatusFragment.showBookNowText();
         }
         else {
             this.trafficLightsPageFragment.showDisconnectedFragment();
-            this.roomStatusFragment.hideBookNowText();
+            //this.roomStatusFragment.hideBookNowText();
         }
         this.showGreenLed();
     }
@@ -673,7 +693,7 @@ public class TrafficLightsPresenter implements
 
         this.trafficLightsPageFragment.getView().setBackgroundColor(resources.getColor(R.color.TrafficLightFree));
         this.trafficLightsPageFragment.showRoomReservationFragment();
-        this.roomStatusFragment.showBookNowText();
+        //this.roomStatusFragment.showBookNowText();
 
         int tempMinutes = PreferenceManager.getInstance(activity).getMaxDurationMinutes();
 
@@ -757,5 +777,41 @@ public class TrafficLightsPresenter implements
         Log.d("Reservator","TrafficLightsPresenter::setDisconnected()");
         this.connected = false;
         runThreadSafeUpdateRoomData();
+    }
+
+    @Override
+    public void onAirQualityReading(final int co2Reading, final int vocReading) {
+        Log.d("reservator", "onAirQualityReading() "+ co2Reading);
+
+        lastAirQualityReadingTimeStamp = System.currentTimeMillis();
+
+        if (this.roomStatusFragment!=null) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    roomStatusFragment.showCo2text(co2Reading);
+                }
+            });
+
+            if (co2Treshold !=- 1) {
+                if (co2Reading >= co2Treshold) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            roomStatusFragment.showAirQualityWarning(co2Treshold);
+                        }
+                    });
+                }
+                if (co2Reading < co2Treshold) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            roomStatusFragment.hideAirQualityWarning();
+                        }
+                    });
+                }
+            }
+
+        }
     }
 }

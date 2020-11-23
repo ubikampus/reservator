@@ -41,7 +41,8 @@ public class PreferenceManager {
     final static String PREFERENCES_CLOSING_MINUTES = "closingMinutes";
     final static String PREFERENCES_MQTT_SERVER_ADDRESS = "mqttServerAddress";
     final static String PREFERENCES_MQTT_PREFIX = "mqttPrefix";
-
+    final static String PREFERENCES_MQTT_AIR_QUALITY_TOPIC = "mqttAirQualityTopic";
+    final static String PREFERENCES_MQTT_CO2_TRESHOLD = "mqttCo2Treshold";
 
     final SharedPreferences preferences;
 
@@ -142,6 +143,26 @@ public class PreferenceManager {
     public void setMqttPrefix(String newPrefix) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(PREFERENCES_MQTT_PREFIX, newPrefix);
+        editor.apply();
+    }
+
+    public String getMqttAirQualityTopic() {
+        return preferences.getString(PREFERENCES_MQTT_AIR_QUALITY_TOPIC, null);
+    }
+
+    public void setMqttAirQualityTopic(String newTopic) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(PREFERENCES_MQTT_AIR_QUALITY_TOPIC, newTopic);
+        editor.apply();
+    }
+
+    public int getMqttCo2Treshold() {
+        return preferences.getInt(PREFERENCES_MQTT_CO2_TRESHOLD, -1);
+    }
+
+    public void setMqttCo2Treshold(int value) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(PREFERENCES_MQTT_CO2_TRESHOLD, value);
         editor.apply();
     }
 

@@ -15,11 +15,13 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    app:layout_constraintTop_toTopOf="parent"
+    >
 
+    <!-- 1145 -->
     <TextView
         android:id="@+id/roomTitleText"
-        android:layout_width="1145dp"
+        android:layout_width="wrap_content"
         android:layout_height="55dp"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
@@ -33,6 +35,26 @@
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/roomCo2Text"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="26dp"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary70Alpha"
+        android:textIsSelectable="false"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="CO2 405ppm"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -91,13 +113,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/statusUntilText" />
 
+
+    <TextView
+        android:id="@+id/warningText"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/TextColor"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAllCaps="true"
+        android:textAlignment="center"
+        android:textColor="#F8F8F8"
+        android:textIsSelectable="false"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/meetingNameText"
+        android:text="CO2 > 800ppm \n Tuuleta huone!  Ventilera rummet!  Ventilate room!">
+    </TextView>
+
+    <!--
     <TextView
         android:id="@+id/bookNowText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/meetingNameText"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:text="@string/quick_booking"
         android:textAlignment="center"
@@ -110,8 +154,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/meetingNameText" />
-
+       />
+    -->
 
 
 </android.support.constraint.ConstraintLayout>

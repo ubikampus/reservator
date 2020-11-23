@@ -343,7 +343,9 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        this.getWindow().getDecorView().setSystemUiVisibility(this.flags);
         if (!hasFocus) {
+
             windowCloseHandler.post(windowCloserRunnable);
         }
     }
@@ -367,6 +369,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         LocaleManager.onAttach(getApplicationContext());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -418,6 +421,15 @@ public class MainActivity extends FragmentActivity {
         this.openFragment(this.trafficLightsPageFragment);
         this.updateNetworkStatus();
         this.uiStarted = true;
+
+        this.getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(
+                new View.OnSystemUiVisibilityChangeListener() {
+                    @Override
+                    public void onSystemUiVisibilityChange(int i) {
+                        //Log.d("reservator", "onSystemUiVisibilityChange()");
+                        getWindow().getDecorView().setSystemUiVisibility(flags);
+                    }
+                });
     }
 
     public void onCalendarUpdated() {
